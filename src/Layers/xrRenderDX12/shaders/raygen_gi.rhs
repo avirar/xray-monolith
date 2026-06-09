@@ -1,0 +1,126 @@
+// raygen_gi.rhs - GI Ray Generation Shader
+// Compiles to: lib_6_3
+
+struct GI_Payload
+{
+    float3 Color;
+    float  Attenuation;
+};
+
+struct CB_GI_Frame
+{
+    float4x4 ViewProjection;
+    float4x4 View;
+    float3   CameraPosition;
+    float    Padding1;
+    uint     ScreenWidth;
+    uint     ScreenHeight;
+    uint     HemisphereSamples;
+    float    MaxRayDistance;
+    float    RayBias;
+    float    SkyContribution;
+    uint     BounceCount;
+    float    BounceAttenuation;
+    uint     Padding2[4];
+};
+
+Texture2D<float4> gPositionBuffer : register(t0);
+Texture2D<float4> gNormalBuffer   : register(t1);
+Texture2D<float4> gColorBuffer    : register(t2);
+RWTexture2D<float4> gGIUAV        : register(u0);
+RWTexture2D<float>  gAOUAV        : register(u1);
+
+cbuffer CB_GI_Frame : register(b0)
+{
+    CB_GI_Frame FrameData;
+};
+
+RaytracingAccelerationStructure SceneTLS : register(t3);
+
+[[export("RayGenGI"), strip(matching-branch-terms), branching(minimal)]]
+void RayGenGI()
+{
+    uint2 Pixel = DispatchRaysIndex().xy;
+
+    if (Pixel.x >= FrameData.ScreenWidth || Pixel.y >= FrameData.ScreenHeight)
+        return;
+
+    float4 Position = gPositionBuffer[Pixel];
+    float3 Normal = normalize(gNormalBuffer[Pixel].xyz);
+    float3 Albedo = gColorBuffer[Pixel].rgb;
+
+    if (Position.w < 0.5)
+    {
+        gGIUAV[Pixel] = float4(0.0f, 0.0f, 0.0f, 0.0f);
+        gAOUAV[Pixel] = 1.0f;
+        return;
+    }
+
+    float3 Irradiance = float3(0.0f, 0.0f, 0.0f);
+    float AOAccum = 0.0f;
+
+    float3 Origin = Position.xyz + Normal * FrameData.RayBias;
+
+    for (uint i = 0; i < FrameData.HemisphereSamples; i++)
+    {
+        float phi = (float(i) / float(FrameData.HemisphereSamples)) * 6.28318530718f;
+        float cosTheta = (float(i + 1) / float(FrameData.HemisphereSamples));
+        float sinTheta = sqrt(1.0f - cosTheta * cosTheta);
+
+        float3 SampleDir = normalize(float3(
+            cos(phi) * sinTheta,
+            sin(phi) * sinTheta,
+            cosTheta
+        ));
+
+        float3x3 Rotation = float3x3(
+            Normal.x, Normal.y, Normal.z,
+            SampleDir.x, SampleDir.y, SampleDir.z,
+            0.0f, 0.0f, 1.0f
+        );
+
+        float3 RayDir = normalize(float3(
+            dot(Rotation._m00, SampleDir),
+            dot(Rotation._m01, SampleDir),
+            dot(Rotation._m02, SampleDir)
+        ));
+
+        RayDesc Ray;
+        Ray.Origin = Origin;
+        Ray.Direction = RayDir;
+        Ray.TMin = FrameData.RayBias;
+        Ray.TMax = FrameData.MaxRayDistance;
+
+        GI_Payload Payload;
+        Payload.Color = float3(0.0f, 0.0f, 0.0f);
+        Payload.Attenuation = 0.0f;
+
+        float THit;
+        float3 HitColor = float3(0.0f, 0.0f, 0.0f);
+
+        TraceRay(
+            SceneTLS,
+            0,
+            0xFF,
+            0,
+            0,
+            0,
+            0,
+            0,
+            Ray,
+            Payload,
+            THit,
+            HitColor
+        );
+
+        float CosWeight = max(dot(Normal, RayDir), 0.0f);
+        Irradiance += HitColor * CosWeight;
+        AOAccum += HitColor.r;
+    }
+
+    Irradiance /= float(FrameData.HemisphereSamples);
+    float AO = AOAccum / float(FrameData.HemisphereSamples);
+
+    gGIUAV[Pixel] = float4(Irradiance, 1.0f);
+    gAOUAV[Pixel] = AO;
+}

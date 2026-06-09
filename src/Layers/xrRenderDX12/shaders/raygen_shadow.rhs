@@ -1,0 +1,112 @@
+// raygen_shadow.rhs - Shadow Ray Generation Shader
+// Compiles to: lib_6_3
+
+struct CB_Shadow_Frame
+{
+    float4x4 ViewProjection;
+    float3   LightPosition;
+    float    LightType;
+    float3   LightDirection;
+    float    LightRange;
+    uint     ScreenWidth;
+    uint     ScreenHeight;
+    uint     SamplesPerPixel;
+    float    LightAreaSize;
+    float    RayBias;
+    float    ShadowOpacity;
+    float    MaxRayDistance;
+    float    Padding1;
+    uint     Padding2[4];
+};
+
+Texture2D<float4> gPositionBuffer : register(t0);
+Texture2D<float4> gNormalBuffer   : register(t1);
+RWTexture2D<float> gShadowUAV     : register(u0);
+
+cbuffer CB_Shadow_Frame : register(b0)
+{
+    CB_Shadow_Frame FrameData;
+};
+
+RaytracingAccelerationStructure SceneTLS : register(t3);
+
+[[export("RayGenShadow"), strip(matching-branch-terms), branching(minimal)]]
+void RayGenShadow()
+{
+    uint2 Pixel = DispatchRaysIndex().xy;
+
+    if (Pixel.x >= FrameData.ScreenWidth || Pixel.y >= FrameData.ScreenHeight)
+        return;
+
+    float4 Position = gPositionBuffer[Pixel];
+    float3 Normal = normalize(gNormalBuffer[Pixel].xyz);
+
+    if (Position.w < 0.5)
+    {
+        gShadowUAV[Pixel] = 1.0f;
+        return;
+    }
+
+    float3 LightDir;
+    if (FrameData.LightType < 0.5)
+    {
+        LightDir = normalize(FrameData.LightDirection);
+    }
+    else
+    {
+        LightDir = normalize(FrameData.LightPosition - Position.xyz);
+    }
+
+    float Distance = length(FrameData.LightPosition - Position.xyz);
+    if (Distance > FrameData.LightRange)
+    {
+        gShadowUAV[Pixel] = 1.0f;
+        return;
+    }
+
+    float3 Origin = Position.xyz + Normal * FrameData.RayBias;
+    float ShadowFactor = 0.0f;
+    uint Samples = FrameData.SamplesPerPixel;
+
+    for (uint i = 0; i < Samples; i++)
+    {
+        float3 Jitter = float3(
+            (float((i * 7 + 3) % 11) / 11.0f - 0.5f) * FrameData.LightAreaSize,
+            (float((i * 13 + 5) % 11) / 11.0f - 0.5f) * FrameData.LightAreaSize,
+            (float((i * 17 + 2) % 11) / 11.0f - 0.5f) * FrameData.LightAreaSize
+        );
+
+        float3 RayOrigin = Origin + Jitter;
+        float3 RayDir = normalize(FrameData.LightPosition - RayOrigin);
+
+        RayDesc Ray;
+        Ray.Origin = RayOrigin;
+        Ray.Direction = RayDir;
+        Ray.TMin = FrameData.RayBias;
+        Ray.TMax = Distance;
+
+        float Payload;
+        float THit;
+
+        TraceRay(
+            SceneTLS,
+            0,
+            0xFF,
+            0,
+            1,
+            0,
+            0,
+            0,
+            Ray,
+            Payload,
+            THit,
+            Payload
+        );
+
+        ShadowFactor += Payload;
+    }
+
+    ShadowFactor /= Samples;
+    float FinalShadow = lerp(FrameData.ShadowOpacity, 1.0f, ShadowFactor);
+    gShadowUAV[Pixel] = FinalShadow;
+}

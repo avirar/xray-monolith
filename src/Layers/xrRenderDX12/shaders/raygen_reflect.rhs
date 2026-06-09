@@ -1,0 +1,111 @@
+// raygen_reflect.rhs - Reflection Ray Generation Shader
+// Compiles to: lib_6_3
+
+struct Reflection_Payload
+{
+    float4 Color;
+    float4 BounceInfo;
+};
+
+struct CB_Reflection_Frame
+{
+    float4x4 ViewProjection;
+    float4x4 View;
+    float3   CameraPosition;
+    float    Padding1;
+    uint     ScreenWidth;
+    uint     ScreenHeight;
+    uint     SamplesPerPixel;
+    float    MaxRayDistance;
+    float    RayBias;
+    float    SkyContribution;
+    uint     MaxBounces;
+    float    MinRoughness;
+    uint     Padding2[4];
+};
+
+Texture2D<float4> gPositionBuffer  : register(t0);
+Texture2D<float4> gNormalBuffer    : register(t1);
+Texture2D<float4> gRoughnessBuffer : register(t2);
+RWTexture2D<float4> gReflectionUAV : register(u0);
+RWTexture2D<float>  gRoughnessMaskUAV : register(u1);
+
+cbuffer CB_Reflection_Frame : register(b0)
+{
+    CB_Reflection_Frame FrameData;
+};
+
+RaytracingAccelerationStructure SceneTLS : register(t3);
+
+float3 GetReflectionDirection(float3 Position, float3 Normal)
+{
+    float3 ViewDir = normalize(FrameData.CameraPosition - Position);
+    return reflect(-ViewDir, Normal);
+}
+
+[[export("RayGenReflection"), strip(matching-branch-terms), branching(minimal)]]
+void RayGenReflection()
+{
+    uint2 Pixel = DispatchRaysIndex().xy;
+
+    if (Pixel.x >= FrameData.ScreenWidth || Pixel.y >= FrameData.ScreenHeight)
+        return;
+
+    float4 Position = gPositionBuffer[Pixel];
+    float3 Normal = normalize(gNormalBuffer[Pixel].xyz);
+    float Roughness = gRoughnessBuffer[Pixel].r;
+
+    if (Position.w < 0.5 || Roughness > FrameData.MinRoughness)
+    {
+        gReflectionUAV[Pixel] = float4(0.0f, 0.0f, 0.0f, 0.0f);
+        gRoughnessMaskUAV[Pixel] = 1.0f;
+        return;
+    }
+
+    float3 ReflectionDir = GetReflectionDirection(Position.xyz, Normal);
+    float3 Origin = Position.xyz + Normal * FrameData.RayBias;
+
+    float3 AccumColor = float3(0.0f, 0.0f, 0.0f);
+    uint Samples = FrameData.SamplesPerPixel;
+
+    for (uint i = 0; i < Samples; i++)
+    {
+        float jitterX = (float(i % 4) + 0.5f) / 4.0f - 0.5f;
+        float jitterY = (float(i / 4) + 0.5f) / 4.0f - 0.5f;
+
+        float3 PerturbedDir = ReflectionDir;
+        PerturbedDir.x += jitterX * Roughness * 0.1f;
+        PerturbedDir.y += jitterY * Roughness * 0.1f;
+        PerturbedDir = normalize(PerturbedDir);
+
+        RayDesc Ray;
+        Ray.Origin = Origin;
+        Ray.Direction = PerturbedDir;
+        Ray.TMin = FrameData.RayBias;
+        Ray.TMax = FrameData.MaxRayDistance;
+
+        float4 Payload = float4(0.0f, 0.0f, 0.0f, 0.0f);
+        float THit;
+
+        TraceRay(
+            SceneTLS,
+            0,
+            0xFF,
+            0,
+            0,
+            0,
+            0,
+            0,
+            Ray,
+            Payload,
+            THit,
+            Payload
+        );
+
+        AccumColor += Payload.rgb;
+    }
+
+    AccumColor /= Samples;
+    gReflectionUAV[Pixel] = float4(AccumColor, 1.0f);
+    gRoughnessMaskUAV[Pixel] = Roughness;
+}

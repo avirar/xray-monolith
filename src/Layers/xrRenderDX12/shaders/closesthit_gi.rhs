@@ -1,0 +1,31 @@
+// closesthit_gi.rhs - GI Closest Hit Shader
+// Compiles to: lib_6_3
+
+struct GI_Payload
+{
+    float3 Color;
+    float  Attenuation;
+};
+
+Texture2D<float4> gPositionBuffer : register(t0);
+Texture2D<float4> gNormalBuffer   : register(t1);
+Texture2D<float4> gColorBuffer    : register(t2);
+
+[[export("ClosestHitGI"), strip(matching-branch-terms), branching(minimal)]]
+void ClosestHitGI() : "closesthit"
+{
+    GI_Payload Payload;
+
+    float3 HitPoint = GeometryIntersection();
+    float3 HitNormal = GeometryAttribute();
+
+    float3 Albedo = float3(0.5f, 0.5f, 0.5f);
+
+    float3 IncidentDir = -RayDirection();
+    float NdotL = max(dot(HitNormal, IncidentDir), 0.0f);
+
+    Payload.Color = Albedo * NdotL;
+    Payload.Attenuation = 1.0f;
+
+    ReportHit(0.0f, 0.0f);
+}

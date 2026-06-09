@@ -1,0 +1,23 @@
+// miss_sky.rhs - GI/Reflection Miss Shader (Sky)
+// Compiles to: lib_6_3
+
+cbuffer CB_Miss_Frame : register(b0)
+{
+    float SkyContribution;
+    float Padding[3];
+};
+
+[[export("MissSky"), strip(matching-branch-terms), branching(minimal)]]
+void MissSky() : "miss"
+{
+    float3 RayDir = RayDirection();
+
+    float SkyY = RayDir.y * 0.5f + 0.5f;
+    float3 SkyColor = lerp(
+        float3(0.2f, 0.3f, 0.5f),
+        float3(0.5f, 0.7f, 1.0f),
+        SkyY
+    );
+
+    ReportPayload(float4(SkyColor * SkyContribution, 1.0f));
+}

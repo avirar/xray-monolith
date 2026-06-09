@@ -1,0 +1,29 @@
+// closesthit_reflect.rhs - Reflection Closest Hit Shader
+// Compiles to: lib_6_3
+
+struct Reflection_Payload
+{
+    float4 Color;
+    float4 BounceInfo;
+};
+
+[[export("ClosestHitReflection"), strip(matching-branch-terms), branching(minimal)]]
+void ClosestHitReflection() : "closesthit"
+{
+    float3 HitPoint = GeometryIntersection();
+    float3 HitNormal = GeometryAttribute();
+
+    float3 Albedo = float3(0.5f, 0.5f, 0.5f);
+    float Roughness = 0.5f;
+
+    float3 ViewDir = -RayDirection();
+    float3 HalfDir = normalize(ViewDir + HitNormal);
+    float NdotH = max(dot(HitNormal, HalfDir), 0.0f);
+
+    float Specular = pow(NdotH, (1.0f - Roughness) * 128.0f);
+
+    float3 ReflectionColor = Albedo * Specular;
+
+    ReportPayload(float4(ReflectionColor, 1.0f));
+    ReportHit(0.0f, 0.0f);
+}

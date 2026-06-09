@@ -1,0 +1,11 @@
+// closesthit_shadow.rhs - Shadow Closest Hit Shader
+// Compiles to: lib_6_3
+
+[[export("ClosestHitShadow"), strip(matching-branch-terms), branching(minimal)]]
+void ClosestHitShadow() : "closesthit"
+{
+    float3 HitPoint = GeometryIntersection();
+
+    ReportPayload(0.0f);
+    ReportHit(0.0f, 0.0f);
+}

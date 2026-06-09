@@ -1,0 +1,8 @@
+// miss_shadow.rhs - Shadow Miss Shader
+// Compiles to: lib_6_3
+
+[[export("MissShadow"), strip(matching-branch-terms), branching(minimal)]]
+void MissShadow() : "miss"
+{
+    ReportPayload(1.0f);
+}
