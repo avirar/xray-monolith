@@ -3,8 +3,9 @@
 #ifdef USE_DX12
 
 #include <d3d12.h>
-#include <d3d12_raytracing.h>
 #include <d3d12sdklayers.h>
+#include <d3dcompiler.h>
+#include <d3dx12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 
@@ -14,10 +15,23 @@ namespace Microsoft::WRL::Wrappers
 
 using Microsoft::WRL::ComPtr;
 
-typedef ID3D12Include ID3DInclude;
-typedef ID3D12Blob ID3DBlob;
+typedef ID3D10Blob ID3DBlob;
 
-typedef D3D12_SHADER_MACRO D3D_SHADER_MACRO;
+struct ID3DVertexShader {};
+struct ID3DPixelShader {};
+struct ID3DGeometryShader {};
+struct ID3DHullShader {};
+struct ID3DDomainShader {};
+struct ID3DComputeShader {};
+typedef ID3D12Resource ID3DRenderTargetView;
+typedef ID3D12Resource ID3DDepthStencilView;
+struct ID3DQuery {};
+struct ID3DState {};
+
+struct __declspec(uuid("00000000-0000-0000-0000-000000000001")) ID3D12SamplerState : public IUnknown {};
+struct __declspec(uuid("00000000-0000-0000-0000-000000000002")) ID3D12DepthStencilState : public IUnknown {};
+struct __declspec(uuid("00000000-0000-0000-0000-000000000003")) ID3D12RasterizerState : public IUnknown {};
+struct __declspec(uuid("00000000-0000-0000-0000-000000000004")) ID3D12BlendState : public IUnknown {};
 
 typedef D3D12_BLEND D3D_BLEND;
 typedef D3D12_BLEND_OP D3D_BLEND_OP;
@@ -41,6 +55,8 @@ typedef D3D12_COMMAND_QUEUE_DESC D3D_COMMAND_QUEUE_DESC;
 typedef D3D12_VIEWPORT D3D_VIEWPORT;
 
 typedef ID3D12PipelineState ID3DPipelineState;
+typedef D3D12_GRAPHICS_PIPELINE_STATE_DESC D3D12_PIPELINE_STATE_DESC;
+struct D3D12_PIPELINE_STATISTICS_QUERY_DATA { UINT IAVertices; UINT IAPrimitives; UINT VSInvocations; UINT GSInvocations; UINT CSInvocations; UINT PSInvocations; UINT HSInvocations; UINT DSInvocations; };
 typedef ID3D12RootSignature ID3DRootSignature;
 typedef ID3D12Resource ID3DBuffer;
 typedef ID3D12Resource ID3DVertexBuffer;
@@ -152,12 +168,12 @@ typedef D3D12_GPU_DESCRIPTOR_HANDLE D3D_GPU_DESCRIPTOR_HANDLE;
 #define D3D_CPU_ACCESS_WRITE D3D12_CPU_ACCESS_WRITE
 #define D3D_CPU_ACCESS_READ D3D12_CPU_ACCESS_READ
 
-#define D3D_MAP_READ D3D12_MAP_READ
-#define D3D_MAP_WRITE D3D12_MAP_WRITE
-#define D3D_MAP_READ_WRITE D3D12_MAP_READ_WRITE
-#define D3D_MAP_WRITE_DISCARD D3D12_MAP_WRITE_DISCARD
-#define D3D_MAP_WRITE_NO_OVERWRITE D3D12_MAP_WRITE_NO_OVERWRITE
-typedef D3D12_MAP D3D_MAP;
+#define D3D_MAP_READ 0
+#define D3D_MAP_WRITE 1
+#define D3D_MAP_READ_WRITE 2
+#define D3D_MAP_WRITE_DISCARD 3
+#define D3D_MAP_WRITE_NO_OVERWRITE 4
+typedef int D3D_MAP;
 
 #define D3D_CLEAR_DEPTH D3D_CLEAR_DEPTH
 #define D3D_CLEAR_STENCIL D3D_CLEAR_STENCIL

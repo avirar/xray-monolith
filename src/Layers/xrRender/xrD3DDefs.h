@@ -2,11 +2,15 @@
 #define	xrD3DDefs_included
 #pragma once
 
-#if defined(USE_DX11) || defined(USE_DX10)
+#if defined(USE_DX11) || defined(USE_DX10) || defined(USE_DX12)
 
+#ifdef USE_DX12
+#	include "..\xrRenderDX12\DX12CommonTypes.h"
+#else
 #	include "..\xrRenderDX10\DXCommonTypes.h"
+#endif
 
-#else	//	USE_DX10
+#else	//	USE_DX9
 
 typedef IDirect3DVertexShader9 ID3DVertexShader;
 typedef IDirect3DPixelShader9 ID3DPixelShader;
@@ -27,7 +31,7 @@ typedef IDirect3DStateBlock9 ID3DState;
 
 #define DX10_ONLY(expr)			do {} while (0)
 
-#endif	//	USE_DX10
+#endif	//	USE_DX9
 
 
 #endif	//	xrD3DDefs_included

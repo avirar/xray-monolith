@@ -7,12 +7,14 @@
 #include "sh_constant.h"
 #include "sh_rt.h"
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX12)
+#include "../xrRenderDX12/dx12R_Backend_Runtime.h"
+#elif defined(USE_DX10) || defined(USE_DX11)
 #include "../xrRenderDX10/dx10R_Backend_Runtime.h"
 #include "../xrRenderDX10/StateManager/dx10State.h"
-#else	//	USE_DX10
+#else	//	USE_DX9
 #include "../xrRenderDX9/dx9R_Backend_Runtime.h"
-#endif	//	USE_DX10
+#endif	//	USE_DX9
 
 IC void R_xforms::set_c_w(R_constant* C)
 {
