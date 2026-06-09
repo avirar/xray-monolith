@@ -469,6 +469,8 @@ void CHW12::CreateDevice(HWND hwnd, bool move_window)
     Reflections12.Init();
     ShadowPipeline12.Init();
     Shadows12.Init();
+    HybridRenderer12.Init();
+    RenderPassManager12.Init();
 
     size_t memory = Desc.DedicatedVideoMemory;
     Msg("*     Texture memory: %d M", (u32)(memory / (1024 * 1024)));
