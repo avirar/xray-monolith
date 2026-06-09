@@ -457,6 +457,7 @@ void CHW12::CreateDevice(HWND hwnd, bool move_window)
     PSOBuilder12.Init();
     SamplerManager12.Init();
     ShaderCompiler12.Init();
+    BLASManager12.Init();
 
     size_t memory = Desc.DedicatedVideoMemory;
     Msg("*     Texture memory: %d M", (u32)(memory / (1024 * 1024)));
