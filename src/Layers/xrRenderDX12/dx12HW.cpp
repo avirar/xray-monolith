@@ -461,6 +461,9 @@ void CHW12::CreateDevice(HWND hwnd, bool move_window)
     RayTracingShaders12.Init();
     RayTracingPipeline12.Init();
     RayTracingDispatch12.Init();
+    GIResources12.Init();
+    GIPipeline12.Init();
+    GI12.Init();
 
     size_t memory = Desc.DedicatedVideoMemory;
     Msg("*     Texture memory: %d M", (u32)(memory / (1024 * 1024)));
