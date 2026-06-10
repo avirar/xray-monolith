@@ -2,6 +2,7 @@
 #define	dx103DFluidEmitters_included
 #pragma once
 
+#if !defined(USE_DX12)
 class dx103DFluidGrid;
 class dx103DFluidData;
 
@@ -69,5 +70,5 @@ private:
 
 	dx103DFluidGrid* m_pGrid;
 };
-
+#endif // !USE_DX12
 #endif	//	dx103DFluidEmitters_included

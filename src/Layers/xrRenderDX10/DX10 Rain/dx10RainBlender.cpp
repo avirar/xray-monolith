@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "./dx10RainBlender.h"
 
+#if !defined(USE_DX12)
 void CBlender_rain::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
@@ -255,3 +256,4 @@ void CBlender_rain_msaa::Compile(CBlender_Compile& C)
 	}
 	::Render->m_MSAASample = -1;
 }
+#endif // !USE_DX12

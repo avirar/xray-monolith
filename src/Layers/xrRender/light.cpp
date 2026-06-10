@@ -407,6 +407,8 @@ void light::export_(light_Package& package)
 	}
 }
 
+#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
+
 void light::set_attenuation_params(float a0, float a1, float a2, float fo)
 {
 	attenuation0 = a0;
@@ -414,8 +416,6 @@ void light::set_attenuation_params(float a0, float a1, float a2, float fo)
 	attenuation2 = a2;
 	falloff = fo;
 }
-
-#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 
 extern float r_ssaGLOD_start, r_ssaGLOD_end;
 extern float ps_r2_slight_fade;

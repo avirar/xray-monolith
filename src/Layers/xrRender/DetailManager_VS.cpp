@@ -64,7 +64,7 @@ void CDetailManager::hw_Load_Geom()
 	u32 vSize = sizeof(vertHW);
 	Msg("* [DETAILS] %d v(%d), %d p", dwVerts, vSize, dwIndices / 3);
 
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_DX12)
 	// Determine POOL & USAGE
 	u32 dwUsage = D3DUSAGE_WRITEONLY;
 
@@ -80,7 +80,7 @@ void CDetailManager::hw_Load_Geom()
 	// Fill VB
 	{
 		vertHW* pV;
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 		vertHW* pVOriginal;
 		pVOriginal = xr_alloc<vertHW>(dwVerts);
 		pV = pVOriginal;
@@ -107,7 +107,7 @@ void CDetailManager::hw_Load_Geom()
 				}
 			}
 		}
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 		R_CHK(dx10BufferUtils::CreateVertexBuffer(&hw_VB, pVOriginal, dwVerts*vSize));
 		HW.stats_manager.increment_stats_vb(hw_VB);
 		xr_free(pVOriginal);
@@ -119,7 +119,7 @@ void CDetailManager::hw_Load_Geom()
 	// Fill IB
 	{
 		u16* pI;
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 		u16* pIOriginal;
 		pIOriginal = xr_alloc<u16>(dwIndices);
 		pI = pIOriginal;
@@ -137,7 +137,7 @@ void CDetailManager::hw_Load_Geom()
 				offset = u16(offset + u16(D.number_vertices));
 			}
 		}
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 		R_CHK(dx10BufferUtils::CreateIndexBuffer(&hw_IB, pIOriginal, dwIndices*2));
 		HW.stats_manager.increment_stats_ib(hw_IB);
 		xr_free(pIOriginal);
@@ -160,7 +160,7 @@ void CDetailManager::hw_Unload()
 	_RELEASE(hw_VB);
 }
 
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_DX12)
 void CDetailManager::hw_Load_Shaders()
 {
 	// Create shader to access constant storage

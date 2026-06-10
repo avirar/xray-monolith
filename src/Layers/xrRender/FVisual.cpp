@@ -12,7 +12,9 @@
 #include "../../xrEngine/fmesh.h"
 #include "fvisual.h"
 
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 #include "../xrRenderDX10/dx10BufferUtils.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -46,7 +48,7 @@ void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 
 	if (data->find_chunk(OGF_GCONTAINER))
 	{
-#ifndef _EDITOR
+#if !defined(_EDITOR) && !defined(USE_DX12)
 		// verts
 		u32 ID = data->r_u32();
 		vBase = data->r_u32();
@@ -112,7 +114,7 @@ void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 		if (data->find_chunk(OGF_VCONTAINER))
 		{
 			R_ASSERT2(0, "pls notify andy about this.");
-#ifndef _EDITOR
+#if !defined(_EDITOR) && !defined(USE_DX12)
 			u32 ID = data->r_u32();
 			vBase = data->r_u32();
 			vCount = data->r_u32();
@@ -132,7 +134,7 @@ void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 			vCount = data->r_u32();
 			u32 vStride = D3DXGetFVFVertexSize(fvf);
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 			VERIFY(NULL==p_rm_Vertices);
 			R_CHK(dx10BufferUtils::CreateVertexBuffer(&p_rm_Vertices, data->pointer(), vCount*vStride));
 			HW.stats_manager.increment_stats_vb(p_rm_Vertices);
@@ -157,7 +159,7 @@ void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 		if (data->find_chunk(OGF_ICONTAINER))
 		{
 			R_ASSERT2(0, "pls notify andy about this.");
-#ifndef _EDITOR
+#if !defined(_EDITOR) && !defined(USE_DX12)
 			u32 ID = data->r_u32();
 			iBase = data->r_u32();
 			iCount = data->r_u32();
@@ -174,7 +176,7 @@ void Fvisual::Load(const char* N, IReader* data, u32 dwFlags)
 			iCount = data->r_u32();
 			dwPrimitives = iCount / 3;
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 			//BOOL	bSoft		= HW.Caps.geometry.bSoftware || (dwFlags&VLOAD_FORCESOFTWARE);
 			//u32		dwUsage		= /*D3DUSAGE_WRITEONLY |*/ (bSoft?D3DUSAGE_SOFTWAREPROCESSING:0);	// indices are read in model-wallmarks code
 			//BYTE*	bytes		= 0;

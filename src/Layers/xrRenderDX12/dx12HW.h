@@ -42,6 +42,8 @@ public:
     void OnAppActivate();
     void OnAppDeactivate();
 
+    ID3D12Device* GetDevice() { return m_pDevice.Get(); }
+
     DXGI_SWAP_CHAIN_DESC1 m_ChainDesc;
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC m_ChainDescFullscreen;
 

@@ -3,6 +3,7 @@
 
 #include "../xrRender/r_constants_cache.h"
 
+#if !defined(USE_DX12)
 dx10ConstantBuffer& R_constants::GetCBuffer(R_constant* C, BufferType BType)
 {
 	if (BType == BT_PixelBuffer)
@@ -145,3 +146,4 @@ void R_constants::flush_cache()
 	}
 }
 */
+#endif // !USE_DX12

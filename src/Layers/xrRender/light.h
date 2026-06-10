@@ -51,11 +51,12 @@ public:
 
 	float virtual_size;
 
-#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 	float			falloff;			// precalc to make light equal to zero at light range
-	float	        attenuation0;		// Constant attenuation		
-	float	        attenuation1;		// Linear attenuation		
-	float	        attenuation2;		// Quadratic attenuation	
+	float	        attenuation0;		// Constant attenuation
+	float	        attenuation1;		// Linear attenuation
+	float	        attenuation2;		// Quadratic attenuation
+
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)	
 
 	light*						omnipart	[6]	;
 	xr_vector<light_indirect>	indirect		;
@@ -163,8 +164,8 @@ public:
 	void			vis_prepare				();
 	void			vis_update				();
 	void			export_					(light_Package& dest);
-	void			set_attenuation_params	(float a0, float a1, float a2, float fo);
 #endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
+	void			set_attenuation_params	(float a0, float a1, float a2, float fo);
 
 	float get_LOD();
 

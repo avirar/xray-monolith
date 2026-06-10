@@ -4,6 +4,7 @@
 #include "dx10BufferUtils.h"
 #include "../xrRender/dxRenderDeviceRender.h"
 
+#if !defined(USE_DX12)
 dx10ConstantBuffer::~dx10ConstantBuffer()
 {
 	DEV->_DeleteConstantBuffer(this);
@@ -103,3 +104,4 @@ void dx10ConstantBuffer::Flush()
         m_bChanged = false;
     }
 }
+#endif // !USE_DX12

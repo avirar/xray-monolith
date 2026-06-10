@@ -2,6 +2,7 @@
 #define	dx103DFluidManager_included
 #pragma once
 
+#if !defined(USE_DX12)
 class dx103DFluidData;
 class dx103DFluidGrid;
 class dx103DFluidObstacles;
@@ -151,5 +152,5 @@ private:
 };
 
 extern dx103DFluidManager FluidManager;
-
+#endif // !USE_DX12
 #endif	//	dx103DFluidManager_included

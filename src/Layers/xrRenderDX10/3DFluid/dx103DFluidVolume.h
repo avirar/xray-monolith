@@ -2,6 +2,7 @@
 #define	dx103DFluidVolume_included
 #pragma once
 
+#if !defined(USE_DX12)
 #include "dx103DFluidData.h"
 #include "../../xrRender/FBasicVisual.h"
 
@@ -22,5 +23,5 @@ private:
 
 	dx103DFluidData m_FluidData;
 };
-
+#endif // !USE_DX12
 #endif	//	dx103DFluidVolume_included

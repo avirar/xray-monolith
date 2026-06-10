@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12RayTracingShaders.h"
 #include "../ShaderCompiler/dx12ShaderCompiler.h"

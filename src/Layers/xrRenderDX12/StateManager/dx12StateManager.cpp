@@ -1,7 +1,10 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12StateManager.h"
 
 #ifdef USE_DX12
+
+#if 0
 
 dx12StateManager::dx12StateManager()
     : m_stateDirty(true),
@@ -276,6 +279,11 @@ ID3D12PipelineState* dx12StateManager::GetOrCreatePSO(const D3D12_PIPELINE_STATE
     return nullptr;
 }
 
+dx12StateManager StateManager12;
+
+#endif // if 0
+
+// Stub to satisfy linker - DX12 uses PSO instead of individual states
 dx12StateManager StateManager12;
 
 #endif // USE_DX12

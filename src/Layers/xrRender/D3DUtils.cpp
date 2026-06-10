@@ -98,7 +98,7 @@ u32 m_ColorSafeRect = 0xffB040B0;
 void SPrimitiveBuffer::CreateFromData(D3DPRIMITIVETYPE _pt, u32 _p_cnt, u32 FVF, LPVOID vertices, u32 _v_cnt,
                                       u16* indices, u32 _i_cnt)
 {
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 	//	TODO: DX10: Implement SPrimitiveBuffer::CreateFromData for DX10
 	//	VERIFY(!"SPrimitiveBuffer::CreateFromData not implemented for dx10");
 #else	//	USE_DX10

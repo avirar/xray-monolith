@@ -2,9 +2,9 @@
 
 #ifdef USE_DX12
 
-#include "DX12CommonTypes.h"
-#include "dx12RayTracingShaders.h"
-#include "dx12RayTracingPipeline.h"
+#include "../DX12CommonTypes.h"
+#include "../Raytracing/dx12RayTracingShaders.h"
+#include "../Raytracing/dx12RayTracingPipeline.h"
 
 struct DX12_GI_PIPELINE_DESC
 {

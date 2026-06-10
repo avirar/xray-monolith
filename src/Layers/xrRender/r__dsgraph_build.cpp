@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 
+#ifndef USE_DX12
+
 #include "fhierrarhyvisual.h"
 #include "SkeletonCustom.h"
 #include "../../xrEngine/fmesh.h"
@@ -1270,3 +1272,5 @@ void CRender::add_Static(dxRender_Visual* pVisual, u32 planes)
 		break;
 	}
 }
+
+#endif // USE_DX12

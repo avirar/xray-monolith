@@ -6,6 +6,7 @@ class SimulatorStates;
 
 #include "dx10SamplerStateCache.h"
 
+#if !defined(USE_DX12)
 class dx10State
 {
 	//	Public interface
@@ -51,5 +52,5 @@ private:
 	//	Private data
 private:
 };
-
+#endif // !USE_DX12
 #endif	//	dx10State_included

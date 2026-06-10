@@ -2,6 +2,7 @@
 #define	dx10ShaderResourceStateCache_included
 #pragma once
 
+#if !defined(USE_DX12)
 class dx10ShaderResourceStateCache
 {
 public:
@@ -61,5 +62,5 @@ private:
 };
 
 extern dx10ShaderResourceStateCache SRVSManager;
-
+#endif // !USE_DX12
 #endif	//	dx10ShaderResourceStateCache_included

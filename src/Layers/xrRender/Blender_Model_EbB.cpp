@@ -189,6 +189,7 @@ void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 	}
 }
 #else
+#if !defined(USE_DX12)
 #include "uber_deffer.h"
 
 void CBlender_Model_EbB::Compile(CBlender_Compile& C)
@@ -237,7 +238,7 @@ void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 		switch (C.iElement)
 		{
 		case SE_R2_NORMAL_HQ: // deffer
-			
+
 			if (C.HudElement)
 			{
 				uber_deffer(C, true, "model_hud", "base_hud", false, 0, true);
@@ -270,4 +271,5 @@ void CBlender_Model_EbB::Compile(CBlender_Compile& C)
 		}
 	}
 }
+#endif // USE_DX12
 #endif

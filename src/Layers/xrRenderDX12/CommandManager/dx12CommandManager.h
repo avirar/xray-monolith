@@ -2,7 +2,7 @@
 
 #ifdef USE_DX12
 
-#include "DX12CommonTypes.h"
+#include "../DX12CommonTypes.h"
 
 class dx12CommandManager
 {
@@ -27,6 +27,7 @@ public:
     void CloseGraphicsCommandList();
     void CloseComputeCommandList();
     void ExecuteCommandLists();
+    void Present(IDXGISwapChain3* pSwapChain);
 
     UINT64 GetFenceValue() const { return m_fenceValue; }
     void Signal();

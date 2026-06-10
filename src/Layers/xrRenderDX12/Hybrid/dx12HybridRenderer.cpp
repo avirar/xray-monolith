@@ -1,5 +1,12 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12HybridRenderer.h"
+#include "../GI/dx12GI.h"
+#include "../Reflections/dx12Reflections.h"
+#include "../Shadows/dx12Shadows.h"
+#include "../RenderPipeline/dx12RenderPipeline.h"
+#include "../RenderPipeline/dx12LightingPipeline.h"
+#include "../RenderPipeline/dx12PostProcessPipeline.h"
 
 #ifdef USE_DX12
 

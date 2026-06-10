@@ -2,6 +2,7 @@
 #define	dx10ConstantBuffer_included
 #pragma once
 
+#if !defined(USE_DX12)
 struct R_constant;
 struct R_constant_load;
 
@@ -53,5 +54,5 @@ private:
 };
 
 typedef resptr_core<dx10ConstantBuffer, resptr_base<dx10ConstantBuffer>> ref_cbuffer;
-
+#endif // !USE_DX12
 #endif	//	dx10ConstantBuffer_included

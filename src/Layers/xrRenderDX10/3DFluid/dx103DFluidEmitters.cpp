@@ -5,6 +5,7 @@
 #include "dx103DFluidData.h"
 #include "dx103DFluidGrid.h"
 
+#if !defined(USE_DX12)
 namespace
 {
 	shared_str strImpulseSize;
@@ -128,53 +129,54 @@ static float lilrand()
 	return (rand() / float(RAND_MAX) - 0.5f) * 5.0f;
 }
 
-void dx103DFluidEmitters::ApplyVelocity(const CEmitter& Emitter)
-{
-	// Draw gaussian ball of velocity
-	RCache.set_Element(m_EmitterTechnique[ET_SimpleGausian]);
-
-	float fRadius = Emitter.m_fRadius;
-	Fvector FlowVelocity = Emitter.m_vFlowVelocity;
-
-	float t = Device.fTimeGlobal;
-
-	switch (Emitter.m_eType)
-	{
-	case ET_SimpleDraught:
-		//fRadius += (0.1f - fRadius) * (1.0f + 0.5f * _sin( (1.0f/30.0f) * t * (2.0f * float(PI))) );
-		//float fFactor = 1.0f + 0.5f * _sin(t * (2.0f * float(PI)) / 10 );
-		float fPeriod = Emitter.m_DraughtParams.m_fPeriod;
-		if (fPeriod < 0.0001f) fPeriod = 0.0001f;
-		float fFactor = 1.0f +
-			Emitter.m_DraughtParams.m_fAmp *
-			_sin
-			(
-				(t + Emitter.m_DraughtParams.m_fPhase) *
-				(2.0f * float(PI)) /
-				fPeriod
-			);
-		FlowVelocity.mul(fFactor);
-		break;
-	}
-
-	RCache.set_c(strImpulseSize, fRadius);
-
-	// Color in this case is the initial velocity given to the emitted smoke
-	Fvector4 color;
-	color.set(
-		FlowVelocity.x,
-		FlowVelocity.y,
-		FlowVelocity.z,
-		0);
-	RCache.set_c(strSplatColor, color);
-
-	Fvector4 center;
-	center.set(
-		Emitter.m_vPosition.x + lilrand(),
-		Emitter.m_vPosition.y + lilrand(),
-		Emitter.m_vPosition.z + lilrand(),
-		0);
-	RCache.set_c(strImpulseCenter, center);
-
-	m_pGrid->DrawSlices();
+void dx103DFluidEmitters::ApplyVelocity(const CEmitter& Emitter) 
+{ 
+	// Draw gaussian ball of velocity 
+	RCache.set_Element(m_EmitterTechnique[ET_SimpleGausian]); 
+ 
+	float fRadius = Emitter.m_fRadius; 
+	Fvector FlowVelocity = Emitter.m_vFlowVelocity; 
+ 
+	float t = Device.fTimeGlobal; 
+ 
+	switch (Emitter.m_eType) 
+	{ 
+	case ET_SimpleDraught: 
+		//fRadius += (0.1f - fRadius) * (1.0f + 0.5f * _sin( (1.0f/30.0f) * t * (2.0f * float(PI))) ); 
+		//float fFactor = 1.0f + 0.5f * _sin(t * (2.0f * float(PI)) / 10 ); 
+		float fPeriod = Emitter.m_DraughtParams.m_fPeriod; 
+		if (fPeriod < 0.0001f) fPeriod = 0.0001f; 
+		float fFactor = 1.0f + 
+			Emitter.m_DraughtParams.m_fAmp * 
+			_sin 
+			( 
+				(t + Emitter.m_DraughtParams.m_fPhase) * 
+				(2.0f * float(PI)) / 
+				fPeriod 
+			); 
+		FlowVelocity.mul(fFactor); 
+		break; 
+	} 
+ 
+	RCache.set_c(strImpulseSize, fRadius); 
+ 
+	// Color in this case is the initial velocity given to the emitted smoke 
+	Fvector4 color; 
+	color.set( 
+		FlowVelocity.x, 
+		FlowVelocity.y, 
+		FlowVelocity.z, 
+		0); 
+	RCache.set_c(strSplatColor, color); 
+ 
+	Fvector4 center; 
+	center.set( 
+		Emitter.m_vPosition.x + lilrand(), 
+		Emitter.m_vPosition.y + lilrand(), 
+		Emitter.m_vPosition.z + lilrand(), 
+		0); 
+	RCache.set_c(strImpulseCenter, center); 
+ 
+	m_pGrid->DrawSlices(); 
 }
+#endif // !USE_DX12

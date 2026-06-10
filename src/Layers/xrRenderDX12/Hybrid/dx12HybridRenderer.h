@@ -2,7 +2,7 @@
 
 #ifdef USE_DX12
 
-#include "DX12CommonTypes.h"
+#include "../DX12CommonTypes.h"
 
 // Render pass flags
 enum DX12_RENDER_PASS
@@ -34,9 +34,12 @@ struct DX12_HYBRID_RENDER_DESC
     bool EnableUpscaling;              // Enable DLSS/FSR upscaling
 };
 
+class dx12RenderPassManager;
+
 class dx12HybridRenderer
 {
 public:
+    friend class dx12RenderPassManager;
     dx12HybridRenderer();
     ~dx12HybridRenderer();
 

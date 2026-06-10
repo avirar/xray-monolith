@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "dx12stdafx.h"
 #include "dx12RendererSelector.h"
 

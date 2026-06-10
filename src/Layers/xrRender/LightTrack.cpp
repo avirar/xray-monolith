@@ -6,6 +6,7 @@
 #include "LightTrack.h"
 #include "../../include/xrRender/RenderVisual.h"
 #include "../../xrEngine/xr_object.h"
+#include "light.h"
 
 #ifdef _EDITOR
 #	include "igame_persistent.h"

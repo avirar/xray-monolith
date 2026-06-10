@@ -158,7 +158,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ProfiledDX12|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rd party\DirectX-Headers\include\directx;. ;$(SolutionDir)3rd party\imgui\;$(SolutionDir)3rd party\luajit-2\src\;$(SolutionDir)3rd party\luabind\;$(SolutionDir)xrCore;$(xrSdkDir)include;$(XRAY_16X_LIBS)OpenAutomate\inc;$(XRAY_16X_LIBS)nvapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rd party\DirectX-Headers\include\directx;. ;$(SolutionDir)3rd party\imgui\;$(SolutionDir)3rd party\luajit-2\src\;$(SolutionDir)3rd party\luabind\;$(SolutionDir)xrCore;$(SolutionDir)xrGame;$(xrSdkDir)include;$(XRAY_16X_LIBS)OpenAutomate\inc;$(XRAY_16X_LIBS)nvapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>XRCORE_PROFILER;USE_DX12;WIN32;NDEBUG;_WINDOWS;_USRDLL;XRRENDER_R5_EXPORTS;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -511,35 +511,93 @@
   <ItemGroup>
     <ClCompile Include="..\..\xrEngine\ai_script_lua_debug.cpp" />
     <ClCompile Include="..\..\xrEngine\ai_script_lua_extension.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidBlenders.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidData.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidEmitters.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidGrid.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidManager.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidObstacles.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidRenderer.cpp" />
-    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidVolume.cpp" />
-    <ClCompile Include="..\xrRenderDX10\Blender_Recorder_R3.cpp" />
-    <ClCompile Include="..\xrRenderDX10\DX10 Rain\dx10RainBlender.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10BufferUtils.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10ConstantBuffer.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10DetailManager_VS.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10HW.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10ResourceManager_Resources.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10ResourceManager_Scripting.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10r_constants.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10r_constants_cache.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10SH_RT.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10SH_Texture.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10StateUtils.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10Texture.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10TextureUtils.cpp" />
-    <ClCompile Include="..\xrRenderDX10\MSAA\dx10MSAABlender.cpp" />
-    <ClCompile Include="..\xrRenderDX10\StateManager\dx10SamplerStateCache.cpp" />
-    <ClCompile Include="..\xrRenderDX10\StateManager\dx10ShaderResourceStateCache.cpp" />
-    <ClCompile Include="..\xrRenderDX10\StateManager\dx10State.cpp" />
-    <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateCache.cpp" />
-    <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateManager.cpp" />
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidBlenders.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidData.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidEmitters.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidGrid.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidObstacles.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\3DFluid\dx103DFluidVolume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\Blender_Recorder_R3.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\DX10 Rain\dx10RainBlender.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10BufferUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10ConstantBuffer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10DetailManager_VS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10HW.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10ResourceManager_Resources.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10ResourceManager_Scripting.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10r_constants.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10r_constants_cache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10SH_RT.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10SH_Texture.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10StateUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10Texture.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10TextureUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\MSAA\dx10MSAABlender.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\StateManager\dx10SamplerStateCache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\StateManager\dx10ShaderResourceStateCache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\StateManager\dx10State.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateCache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\Animation.cpp" />
     <ClCompile Include="..\xrRender\blenders\Blender.cpp" />
     <ClCompile Include="..\xrRender\blenders\Blender_Palette.cpp" />
@@ -594,14 +652,20 @@
     <ClCompile Include="..\xrRender\FHierrarhyVisual.cpp" />
     <ClCompile Include="..\xrRender\FLOD.cpp" />
     <ClCompile Include="..\xrRender\FProgressive.cpp" />
-    <ClCompile Include="..\xrRender\FSkinned.cpp" />
-    <ClCompile Include="..\xrRender\FTreeVisual.cpp" />
+    <ClCompile Include="..\xrRender\FSkinned.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\FTreeVisual.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\FVisual.cpp" />
     <ClCompile Include="..\xrRender\gifPlayer.cpp" />
     <ClCompile Include="..\xrRender\HOM.cpp" />
     <ClCompile Include="..\xrRender\HWCaps.cpp" />
     <ClCompile Include="..\xrRender\light.cpp" />
-    <ClCompile Include="..\xrRender\LightTrack.cpp" />
+    <ClCompile Include="..\xrRender\LightTrack.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\Light_DB.cpp" />
     <ClCompile Include="..\xrRender\Light_Package.cpp" />
     <ClCompile Include="..\xrRender\ModelPool.cpp" />
@@ -609,7 +673,9 @@
     <ClCompile Include="..\xrRender\NvTriStripObjects.cpp" />
     <ClCompile Include="..\xrRender\occRasterizer.cpp" />
     <ClCompile Include="..\xrRender\occRasterizer_core.cpp" />
-    <ClCompile Include="..\xrRender\ParticleEffect.cpp" />
+    <ClCompile Include="..\xrRender\ParticleEffect.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\ParticleEffectActions.cpp" />
     <ClCompile Include="..\xrRender\ParticleEffectDef.cpp" />
     <ClCompile Include="..\xrRender\ParticleGroup.cpp" />
@@ -640,15 +706,21 @@
     <ClCompile Include="..\xrRender\r__occlusion.cpp" />
     <ClCompile Include="..\xrRender\r__pixel_calculator.cpp" />
     <ClCompile Include="..\xrRender\r__screenshot.cpp" />
-    <ClCompile Include="..\xrRender\r__sector.cpp" />
+    <ClCompile Include="..\xrRender\r__sector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\r__sector_traversal.cpp" />
     <ClCompile Include="..\xrRender\Shader.cpp" />
     <ClCompile Include="..\xrRender\SH_Atomic.cpp" />
     <ClCompile Include="..\xrRender\SH_Constant.cpp" />
     <ClCompile Include="..\xrRender\SH_Matrix.cpp" />
     <ClCompile Include="..\xrRender\SkeletonAnimated.cpp" />
-    <ClCompile Include="..\xrRender\SkeletonCustom.cpp" />
-    <ClCompile Include="..\xrRender\SkeletonRigid.cpp" />
+    <ClCompile Include="..\xrRender\SkeletonCustom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\SkeletonRigid.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\SkeletonX.cpp" />
     <ClCompile Include="..\xrRender\stats_manager.cpp" />
     <ClCompile Include="..\xrRender\TextureDescrManager.cpp" />
@@ -657,83 +729,233 @@
     <ClCompile Include="..\xrRender\uber_deffer.cpp" />
     <ClCompile Include="..\xrRender\Utils\dxHashHelper.cpp" />
     <ClCompile Include="..\xrRender\VertexCache.cpp" />
-    <ClCompile Include="..\xrRender\WallmarksEngine.cpp" />
-    <ClCompile Include="..\xrRender\xrRender_console.cpp" />
+    <ClCompile Include="..\xrRender\WallmarksEngine.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\xrRender_console.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\xrRender\xrStripify.cpp" />
     <ClCompile Include="..\xrRender\xr_effgamma.cpp" />
-    <ClCompile Include="blender_bloom_build.cpp" />
-    <ClCompile Include="blender_blur.cpp" />
-    <ClCompile Include="blender_combine.cpp" />
-    <ClCompile Include="blender_deffer_aref.cpp" />
-    <ClCompile Include="blender_deffer_flat.cpp" />
-    <ClCompile Include="blender_deffer_model.cpp" />
-    <ClCompile Include="blender_dof.cpp" />
-    <ClCompile Include="blender_hdr10_bloom.cpp" />
-    <ClCompile Include="blender_hdr10_lens_flare.cpp" />
-    <ClCompile Include="blender_lut.cpp" />
-    <ClCompile Include="blender_nightvision.cpp" />
-    <ClCompile Include="blender_gasmask_drops.cpp" />
-    <ClCompile Include="blender_gasmask_dudv.cpp" />
-    <ClCompile Include="blender_light_direct.cpp" />
-    <ClCompile Include="blender_light_mask.cpp" />
-    <ClCompile Include="blender_light_occq.cpp" />
-    <ClCompile Include="blender_light_point.cpp" />
-    <ClCompile Include="blender_light_reflected.cpp" />
-    <ClCompile Include="blender_light_spot.cpp" />
-    <ClCompile Include="blender_luminance.cpp" />
-    <ClCompile Include="blender_pp_bloom.cpp" />
-    <ClCompile Include="blender_smaa.cpp" />
-    <ClCompile Include="blender_ssao.cpp" />
-    <ClCompile Include="blender_ss_sunshafts.cpp" />
-    <ClCompile Include="ComputeShader.cpp" />
-    <ClCompile Include="CSCompiler.cpp" />
-    <ClCompile Include="dx11HDAOCSBlender.cpp" />
-    <ClCompile Include="dx11MinMaxSMBlender.cpp" />
-    <ClCompile Include="light_GI.cpp" />
-    <ClCompile Include="Light_Render_Direct.cpp" />
-    <ClCompile Include="Light_Render_Direct_ComputeXFS.cpp" />
-    <ClCompile Include="light_smapvis.cpp" />
-    <ClCompile Include="light_vis.cpp" />
-    <ClCompile Include="r2_blenders.cpp" />
-    <ClCompile Include="r2_R_calculate.cpp" />
-    <ClCompile Include="r2_R_lights.cpp" />
-    <ClCompile Include="r2_R_sun.cpp" />
-    <ClCompile Include="r2_sector_detect.cpp" />
-    <ClCompile Include="r2_test_hw.cpp" />
-    <ClCompile Include="r4.cpp" />
-    <ClCompile Include="r4_loader.cpp" />
-    <ClCompile Include="r4_rendertarget.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_direct.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_omnipart_geom.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_point.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_point_geom.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_reflected.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_spot.cpp" />
-    <ClCompile Include="r4_rendertarget_accum_spot_geom.cpp" />
-    <ClCompile Include="r4_rendertarget_create_minmaxSM.cpp" />
-    <ClCompile Include="r4_rendertarget_draw_rain.cpp" />
-    <ClCompile Include="r4_rendertarget_draw_volume.cpp" />
-    <ClCompile Include="r4_rendertarget_enable_scissor.cpp" />
-    <ClCompile Include="r4_rendertarget_mark_msaa_edges.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_accumulator.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_bloom.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_combine.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_hdao.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_hdr10_bloom.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_hdr10_lens_flare.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_luminance.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_occq.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_PP.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_rain.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_scene.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_smap_D.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_smap_S.cpp" />
-    <ClCompile Include="r4_rendertarget_phase_ssao.cpp" />
-    <ClCompile Include="r4_R_rain.cpp" />
-    <ClCompile Include="r4_R_render.cpp" />
-    <ClCompile Include="r4_R_sun_support.cpp" />
-    <ClCompile Include="R_Backend_LOD.cpp" />
-    <ClCompile Include="..\xrRenderDX10\dx10EventWrapper.cpp" />
+    <ClCompile Include="blender_bloom_build.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_blur.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_combine.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_deffer_aref.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_deffer_flat.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_deffer_model.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_dof.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_hdr10_bloom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_hdr10_lens_flare.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_lut.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_nightvision.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_gasmask_drops.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_gasmask_dudv.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_light_direct.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_light_mask.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_light_occq.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_light_point.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_light_reflected.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_light_spot.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_luminance.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_pp_bloom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_smaa.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_ssao.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="blender_ss_sunshafts.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="ComputeShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CSCompiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="dx11HDAOCSBlender.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="dx11MinMaxSMBlender.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="light_GI.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Light_Render_Direct.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Light_Render_Direct_ComputeXFS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="light_smapvis.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="light_vis.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r2_blenders.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r2_R_calculate.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r2_R_lights.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r2_R_sun.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r2_sector_detect.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r2_test_hw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_loader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_direct.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_omnipart_geom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_point.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_point_geom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_reflected.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_spot.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_accum_spot_geom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_create_minmaxSM.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_draw_rain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_draw_volume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_enable_scissor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_mark_msaa_edges.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_accumulator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_bloom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_combine.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_hdao.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_hdr10_bloom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_hdr10_lens_flare.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_luminance.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_occq.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_PP.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_rain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_scene.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_smap_D.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_smap_S.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_ssao.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_R_rain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_R_render.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="r4_R_sun_support.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="R_Backend_LOD.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\dx10EventWrapper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ProfiledDX12|x64'">Create</PrecompiledHeader>
@@ -758,40 +980,111 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\xrRenderDX12/dx12ConsoleVars.cpp" />
-    <ClCompile Include="..\xrRenderDX12/dx12ConstantBuffer.cpp" />
-    <ClCompile Include="..\xrRenderDX12/dx12HW.cpp" />
-    <ClCompile Include="..\xrRenderDX12/dx12R_Backend.cpp" />
-    <ClCompile Include="..\xrRenderDX12/dx12RendererSelector.cpp" />
-    <ClCompile Include="..\xrRenderDX12/dx12Texture.cpp" />
-    <ClCompile Include="..\xrRenderDX12/StateManager/dx12StateManager.cpp" />
-    <ClCompile Include="..\xrRenderDX12/DescriptorManager/dx12DescriptorManager.cpp" />
-    <ClCompile Include="..\xrRenderDX12/CommandManager/dx12CommandManager.cpp" />
-    <ClCompile Include="..\xrRenderDX12/RootSignature/dx12RootSignature.cpp" />
-    <ClCompile Include="..\xrRenderDX12/PSOBuilder/dx12PSOBuilder.cpp" />
-    <ClCompile Include="..\xrRenderDX12/SamplerManager/dx12SamplerManager.cpp" />
-    <ClCompile Include="..\xrRenderDX12/RenderPipeline/dx12LightingPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/RenderPipeline/dx12PostProcessPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/RenderPipeline/dx12RenderPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/ShaderCompiler/dx12ShaderCompiler.cpp" />
-    <ClCompile Include="..\xrRenderDX12/ComputeShader/dx12ComputeShader.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12BLAS.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RayTracingDispatch.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RayTracingPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RayTracingShaders.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RaytracingGeometry.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12Scene.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12TLAS.cpp" />
-    <ClCompile Include="..\xrRenderDX12/GI/dx12GI.cpp" />
-    <ClCompile Include="..\xrRenderDX12/GI/dx12GIPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/GI/dx12GIResources.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Reflections/dx12ReflectionPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Reflections/dx12ReflectionResources.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Reflections/dx12Reflections.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Shadows/dx12ShadowPipeline.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Shadows/dx12Shadows.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Hybrid/dx12HybridRenderer.cpp" />
-    <ClCompile Include="..\xrRenderDX12/Hybrid/dx12RenderPassManager.cpp" />
+    <ClCompile Include="..\xrRenderDX12/dx12ConsoleVars.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/dx12ConstantBuffer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/dx12BufferUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/dx12HW.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/dx12R_Backend.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/dx12RendererSelector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/dx12Texture.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/StateManager/dx12StateManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/DescriptorManager/dx12DescriptorManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/CommandManager/dx12CommandManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/RootSignature/dx12RootSignature.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/PSOBuilder/dx12PSOBuilder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/SamplerManager/dx12SamplerManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/RenderPipeline/dx12LightingPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/RenderPipeline/dx12PostProcessPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/RenderPipeline/dx12RenderPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/ShaderCompiler/dx12ShaderCompiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/ComputeShader/dx12ComputeShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12BLAS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RayTracingDispatch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RayTracingPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RayTracingShaders.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12RaytracingGeometry.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12Scene.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Raytracing/dx12TLAS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/GI/dx12GI.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/GI/dx12GIPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/GI/dx12GIResources.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Reflections/dx12ReflectionPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Reflections/dx12ReflectionResources.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Reflections/dx12Reflections.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Shadows/dx12ShadowPipeline.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Shadows/dx12Shadows.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Hybrid/dx12HybridRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX12/Hybrid/dx12RenderPassManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ProfiledDX12'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\xrRenderDX12/DX12CommonTypes.h" />

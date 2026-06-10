@@ -55,6 +55,8 @@ void CBackend::CreateQuadIB()
 
 #else	//	USE_DX11
 
+#ifndef USE_DX12
+
 void CBackend::RestoreQuadIBData()
 {
 	const u32 dwTriCount = 4 * 1024;
@@ -109,6 +111,7 @@ void CBackend::CreateQuadIB()
 	R_CHK(QuadIB->Unlock());
 }
 
+#endif // USE_DX12
 #endif	//	USE_DX11
 
 // Device dependance

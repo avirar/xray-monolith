@@ -4,6 +4,7 @@
 #include "../dx10StateUtils.h"
 #include "dx10StateCache.h"
 
+#if !defined(USE_DX12)
 dx10StateManager StateManager;
 
 //	DX10: TODO: Implement alpha referense control
@@ -434,7 +435,8 @@ void dx10StateManager::OverrideScissoring(bool bOverride, BOOL bValue)
 			else
 				dx10StateUtils::ResetDescription(tmpDesc);
 
-			m_RDesc.ScissorEnable = tmpDesc.ScissorEnable;
+m_RDesc.ScissorEnable = tmpDesc.ScissorEnable;
 		}
 	}
 }
+#endif // !USE_DX12

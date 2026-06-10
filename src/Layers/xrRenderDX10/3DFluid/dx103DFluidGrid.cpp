@@ -3,6 +3,7 @@
 
 #include "../dx10BufferUtils.h"
 
+#if !defined(USE_DX12)
 struct VS_INPUT_FLUIDSIM_STRUCT
 {
 	D3DXVECTOR3 Pos; // Clip space position for slice vertices
@@ -309,3 +310,4 @@ void dx103DFluidGrid::DrawBoundaryLines(void)
 	RCache.set_Geometry(m_GeomBoundaryLines);
 	RCache.Render(D3DPT_TRIANGLELIST, 0, m_iNumVerticesBoundaryLines / 3);
 }
+#endif // !USE_DX12

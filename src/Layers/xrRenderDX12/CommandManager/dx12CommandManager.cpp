@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12CommandManager.h"
 
@@ -206,6 +207,14 @@ void dx12CommandManager::ResetAllocator(UINT FrameIndex, bool Graphics, bool Com
         {
             R_CHK(m_pComputeAllocators[FrameIndex]->Reset());
         }
+    }
+}
+
+void dx12CommandManager::Present(IDXGISwapChain3* pSwapChain)
+{
+    if (pSwapChain)
+    {
+        pSwapChain->Present(1, 0);
     }
 }
 

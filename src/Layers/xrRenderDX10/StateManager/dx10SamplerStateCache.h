@@ -2,7 +2,7 @@
 #define	dx10SamplerStateCache_included
 #pragma once
 
-
+#if !defined(USE_DX12)
 class dx10SamplerStateCache
 {
 public:
@@ -79,5 +79,5 @@ private:
 };
 
 extern dx10SamplerStateCache SSManager;
-
+#endif // !USE_DX12
 #endif	//	dx10SamplerStateCache_included

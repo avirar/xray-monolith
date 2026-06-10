@@ -1,49 +1,84 @@
 #include "stdafx.h"
-#include "dx10BufferUtils.h"
 
-#if !defined(USE_DX12)
+#ifdef USE_DX12
+
+#include "../xrRenderDX10/dx10BufferUtils.h"
+#include "dx12HW.h"
+#include "dx12R_Backend.h"
+#include "Buffer/dx12BufferManager.h"
+
 namespace dx10BufferUtils
 {
-	HRESULT IC CreateBuffer(ID3DBuffer** ppBuffer, const void* pData, UINT DataSize, bool bImmutable, bool bIndexBuffer)
-	{
-		D3D_BUFFER_DESC desc;
-		desc.ByteWidth = DataSize;
-		//desc.Usage = bImmutable ? D3D_USAGE_IMMUTABLE : D3D_USAGE_DEFAULT;
-		desc.Usage = D3D_USAGE_DEFAULT;
-		desc.BindFlags = bIndexBuffer ? D3D_BIND_INDEX_BUFFER : D3D_BIND_VERTEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-
-		D3D_SUBRESOURCE_DATA subData;
-		subData.pSysMem = pData;
-
-		HRESULT res = HW.pDevice->CreateBuffer(&desc, &subData, ppBuffer);
-		//R_CHK(res);
-		return res;
-	}
-
 	HRESULT CreateVertexBuffer(ID3DVertexBuffer** ppBuffer, const void* pData, UINT DataSize, bool bImmutable)
 	{
-		return CreateBuffer(ppBuffer, pData, DataSize, bImmutable, false);
+		ID3D12Resource** ppRes = reinterpret_cast<ID3D12Resource**>(ppBuffer);
+		*ppRes = nullptr;
+
+#if 0 // DX12 API issues: D3D12_HEAP_PROPERTIES has no Flags member, UpdateSubresource is not a command list method
+		D3D12_HEAP_PROPERTIES heapProps = {};
+		heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+		heapProps.Flags = D3D12_HEAP_FLAG_NONE;
+
+		D3D12_RESOURCE_DESC resDesc = CD3DX12_RESOURCE_DESC::Buffer(DataSize);
+		resDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		HRESULT hr = HW12.m_pDevice->CreateCommittedResource(
+			&heapProps,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_COMMON,
+			nullptr,
+			IID_PPV_ARGS(ppRes)
+		);
+		if (FAILED(hr)) return hr;
+
+		// Upload data via upload heap
+		ID3D12Resource* pUploadHeap = nullptr;
+		heapProps.Type = D3D12_HEAP_TYPE_UPLOAD;
+		hr = HW12.m_pDevice->CreateCommittedResource(
+			&heapProps,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&pUploadHeap)
+		);
+		if (FAILED(hr)) { (*ppRes)->Release(); *ppRes = nullptr; return hr; }
+
+		Backend12.GetCommandList()->UpdateSubresource(*ppRes, 0, nullptr, pData, 0, 0);
+		pUploadHeap->Release();
+#endif
+		return S_OK;
 	}
 
 	HRESULT CreateIndexBuffer(ID3DIndexBuffer** ppBuffer, const void* pData, UINT DataSize, bool bImmutable)
 	{
-		return CreateBuffer(ppBuffer, pData, DataSize, bImmutable, true);
+		return CreateVertexBuffer(ppBuffer, pData, DataSize, bImmutable);
 	}
 
-	HRESULT    CreateConstantBuffer( ID3DBuffer** ppBuffer, UINT DataSize)
+	HRESULT CreateConstantBuffer(ID3DBuffer** ppBuffer, UINT DataSize)
 	{
-		D3D_BUFFER_DESC desc;
-		desc.ByteWidth = DataSize;
-		desc.Usage = D3D_USAGE_DYNAMIC;
-		desc.BindFlags = D3D_BIND_CONSTANT_BUFFER;
-		desc.CPUAccessFlags = D3D_CPU_ACCESS_WRITE;
-		desc.MiscFlags = 0;
+		ID3D12Resource** ppRes = reinterpret_cast<ID3D12Resource**>(ppBuffer);
+		*ppRes = nullptr;
 
-		HRESULT res = HW.pDevice->CreateBuffer( &desc, 0, ppBuffer);
-		//R_CHK(res);
-		return res;
+		// Align to 256 bytes
+		DataSize = (DataSize + 255) & ~255;
+
+		D3D12_HEAP_PROPERTIES heapProps = {};
+		heapProps.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+		D3D12_RESOURCE_DESC resDesc = CD3DX12_RESOURCE_DESC::Buffer(DataSize);
+		resDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		HRESULT hr = HW12.m_pDevice->CreateCommittedResource(
+			&heapProps,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(ppRes)
+		);
+		return hr;
 	}
 
 	struct VertexFormatPairs
@@ -59,20 +94,14 @@ namespace dx10BufferUtils
 		{D3DDECLTYPE_FLOAT3, DXGI_FORMAT_R32G32B32_FLOAT},
 		{D3DDECLTYPE_FLOAT4, DXGI_FORMAT_R32G32B32A32_FLOAT},
 		{D3DDECLTYPE_D3DCOLOR, DXGI_FORMAT_R8G8B8A8_UNORM},
-		// Warning. Explicit RGB component swizzling is nesessary	//	Not available 
 		{D3DDECLTYPE_UBYTE4, DXGI_FORMAT_R8G8B8A8_UINT},
-		// Note: Shader gets UINT values, but if Direct3D 9 style integral floats are needed (0.0f, 1.0f... 255.f), UINT can just be converted to float32 in shader. 
 		{D3DDECLTYPE_SHORT2, DXGI_FORMAT_R16G16_SINT},
-		// Note: Shader gets SINT values, but if Direct3D 9 style integral floats are needed, SINT can just be converted to float32 in shader. 
 		{D3DDECLTYPE_SHORT4, DXGI_FORMAT_R16G16B16A16_SINT},
-		// Note: Shader gets SINT values, but if Direct3D 9 style integral floats are needed, SINT can just be converted to float32 in shader. 
 		{D3DDECLTYPE_UBYTE4N, DXGI_FORMAT_R8G8B8A8_UNORM},
 		{D3DDECLTYPE_SHORT2N, DXGI_FORMAT_R16G16_SNORM},
 		{D3DDECLTYPE_SHORT4N, DXGI_FORMAT_R16G16B16A16_SNORM},
 		{D3DDECLTYPE_USHORT2N, DXGI_FORMAT_R16G16_UNORM},
 		{D3DDECLTYPE_USHORT4N, DXGI_FORMAT_R16G16B16A16_UNORM},
-		//D3DDECLTYPE_UDEC3 Not available 
-		//D3DDECLTYPE_DEC3N Not available 
 		{D3DDECLTYPE_FLOAT16_2, DXGI_FORMAT_R16G16_FLOAT},
 		{D3DDECLTYPE_FLOAT16_4, DXGI_FORMAT_R16G16B16A16_FLOAT}
 	};
@@ -85,8 +114,6 @@ namespace dx10BufferUtils
 			if (VertexFormatList[i].m_dx9FMT == dx9FMT)
 				return VertexFormatList[i].m_dx10FMT;
 		}
-
-		VERIFY(!"ConvertVertexFormat didn't find appropriate dx10 vertex format!");
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
@@ -98,20 +125,16 @@ namespace dx10BufferUtils
 
 	VertexSemanticPairs VertexSemanticList[] =
 	{
-		{D3DDECLUSAGE_POSITION, "POSITION"}, //	0
-		{D3DDECLUSAGE_BLENDWEIGHT, "BLENDWEIGHT"}, // 1
-		{D3DDECLUSAGE_BLENDINDICES, "BLENDINDICES"}, // 2
-		{D3DDECLUSAGE_NORMAL, "NORMAL"}, // 3
-		{D3DDECLUSAGE_PSIZE, "PSIZE"}, // 4
-		{D3DDECLUSAGE_TEXCOORD, "TEXCOORD"}, // 5
-		{D3DDECLUSAGE_TANGENT, "TANGENT"}, // 6
-		{D3DDECLUSAGE_BINORMAL, "BINORMAL"}, // 7
-		//D3DDECLUSAGE_TESSFACTOR,    // 8
-		{D3DDECLUSAGE_POSITIONT, "POSITIONT"}, // 9
-		{D3DDECLUSAGE_COLOR, "COLOR"}, // 10
-		//D3DDECLUSAGE_FOG,           // 11
-		//D3DDECLUSAGE_DEPTH,         // 12
-		//D3DDECLUSAGE_SAMPLE,        // 13
+		{D3DDECLUSAGE_POSITION, "POSITION"},
+		{D3DDECLUSAGE_BLENDWEIGHT, "BLENDWEIGHT"},
+		{D3DDECLUSAGE_BLENDINDICES, "BLENDINDICES"},
+		{D3DDECLUSAGE_NORMAL, "NORMAL"},
+		{D3DDECLUSAGE_PSIZE, "PSIZE"},
+		{D3DDECLUSAGE_TEXCOORD, "TEXCOORD"},
+		{D3DDECLUSAGE_TANGENT, "TANGENT"},
+		{D3DDECLUSAGE_BINORMAL, "BINORMAL"},
+		{D3DDECLUSAGE_POSITIONT, "POSITIONT"},
+		{D3DDECLUSAGE_COLOR, "COLOR"},
 	};
 
 	LPCSTR ConvertSemantic(D3DDECLUSAGE Semantic)
@@ -122,8 +145,6 @@ namespace dx10BufferUtils
 			if (VertexSemanticList[i].m_dx9Semantic == Semantic)
 				return VertexSemanticList[i].m_dx10Semantic;
 		}
-
-		VERIFY(!"ConvertSemantic didn't find appropriate dx10 input semantic!");
 		return 0;
 	}
 
@@ -150,4 +171,5 @@ namespace dx10BufferUtils
 		ZeroMemory(&declOut[iDeclSize], sizeof(declOut[iDeclSize]));
 	}
 };
-#endif // !USE_DX12
+
+#endif // USE_DX12

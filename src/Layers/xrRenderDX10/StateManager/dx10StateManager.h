@@ -2,6 +2,7 @@
 #define	dx10StateManager_included
 #pragma once
 
+#if !defined(USE_DX12)
 class dx10StateManager
 {
 public:
@@ -92,5 +93,5 @@ private:
 };
 
 extern dx10StateManager StateManager;
-
+#endif // !USE_DX12
 #endif	//	dx10StateManager_included

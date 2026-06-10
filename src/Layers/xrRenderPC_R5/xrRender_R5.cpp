@@ -4,6 +4,7 @@
 #include "../xrRender/dxRenderFactory.h"
 #include "../xrRender/dxUIRender.h"
 #include "../xrRender/dxDebugRender.h"
+#include "../../xrEngine/Render.h"
 
 //#pragma comment(lib,"xrEngine.lib")
 
@@ -13,7 +14,7 @@ BOOL DllMainXrRenderR5(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		::Render = &RImplementation;
+		::Render = reinterpret_cast<IRender_interface*>(&RImplementation);
 		::RenderFactory = &RenderFactoryImpl;
 		::DU = &DUImpl;
 		UIRender = &UIRenderImpl;

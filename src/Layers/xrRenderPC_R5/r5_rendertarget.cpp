@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "r5_rendertarget.h"
 
-#ifdef USE_DX12
+#if 0 // USE_DX12 - disabled until DX12 infrastructure is complete
 
 #include "../xrRenderDX12/dx12HW.h"
 #include "../xrRenderDX12/GI/dx12GIResources.h"
@@ -116,4 +117,4 @@ void R5RenderTarget::TransitionToUnorderedAccess()
     // Resource barriers handled by individual subsystems
 }
 
-#endif // USE_DX12
+#endif

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#ifndef USE_DX12
+
 void CRenderTarget::phase_nightvision()
 {
 	//Constants
@@ -214,3 +216,5 @@ void CRenderTarget::phase_3DSSReticle()
 	RImplementation.render_Reticle();
 };
 #endif
+
+#endif // USE_DX12

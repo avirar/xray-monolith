@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12PSOBuilder.h"
 
@@ -29,7 +30,6 @@ u64 dx12PSOBuilder::ComputePSOKey(const D3D12_PIPELINE_STATE_DESC& Desc) const
         const void* pGS;
         const void* pHS;
         const void* pDS;
-        const void* pCS;
         const void* pRootSignature;
         D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopologyType;
         DXGI_FORMAT RTFormats[D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT];
@@ -49,7 +49,6 @@ u64 dx12PSOBuilder::ComputePSOKey(const D3D12_PIPELINE_STATE_DESC& Desc) const
     key.pGS = Desc.GS.pShaderBytecode;
     key.pHS = Desc.HS.pShaderBytecode;
     key.pDS = Desc.DS.pShaderBytecode;
-    key.pCS = Desc.CS.pShaderBytecode;
     key.pRootSignature = Desc.pRootSignature;
     key.PrimitiveTopologyType = Desc.PrimitiveTopologyType;
     CopyMemory(key.RTFormats, Desc.RTVFormats, sizeof(key.RTFormats));
@@ -58,7 +57,7 @@ u64 dx12PSOBuilder::ComputePSOKey(const D3D12_PIPELINE_STATE_DESC& Desc) const
     key.SampleMask = Desc.SampleMask;
     key.NumSamples = Desc.SampleDesc.Count;
     key.ClassicRenderTargets = Desc.Flags & D3D12_PIPELINE_STATE_FLAG_CLASSIC_RENDER_TARGETS;
-    key.IBStripCutValue = Desc.IBStripCutValue;
+    key.IBStripCutValue = (UINT)Desc.IBStripCutValue;
 
     return xxhash64(&key, sizeof(key), 0);
 }
@@ -72,14 +71,13 @@ ID3D12PipelineState* dx12PSOBuilder::CreateGraphicsPSO(const DX12_PSO_BUILD_DESC
     psoDesc.GS = Desc.pGS ? CD3DX12_SHADER_BYTECODE(Desc.pGS) : CD3DX12_SHADER_BYTECODE();
     psoDesc.HS = Desc.pHS ? CD3DX12_SHADER_BYTECODE(Desc.pHS) : CD3DX12_SHADER_BYTECODE();
     psoDesc.DS = Desc.pDS ? CD3DX12_SHADER_BYTECODE(Desc.pDS) : CD3DX12_SHADER_BYTECODE();
-    psoDesc.CS = CD3DX12_SHADER_BYTECODE();
 
     psoDesc.pRootSignature = Desc.pRootSignature;
 
     psoDesc.InputLayout = CD3DX12_INPUT_LAYOUT_DESC(Desc.pInputLayout, Desc.InputLayoutElementCount);
     psoDesc.PrimitiveTopologyType = Desc.PrimitiveTopologyType;
-    psoDesc.IBStripCutValue = Desc.IBStripCutValue ? Desc.IBStripCutValue :
-                               D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFF;
+  psoDesc.IBStripCutValue = (D3D12_INDEX_BUFFER_STRIP_CUT_VALUE)(Desc.IBStripCutValue ? Desc.IBStripCutValue :
+                                (UINT)D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFF);
 
     CopyMemory(psoDesc.RTVFormats, Desc.RTFormats, sizeof(Desc.RTFormats));
     psoDesc.NumRenderTargets = Desc.NumRenderTargets;
@@ -90,7 +88,7 @@ ID3D12PipelineState* dx12PSOBuilder::CreateGraphicsPSO(const DX12_PSO_BUILD_DESC
     psoDesc.SampleDesc.Quality = 0;
 
     if (Desc.ClassicRenderTargets)
-        psoDesc.Flags = D3D12_PIPELINE_STATE_FLAG_CLASSIC_RENDER_TARGETS;
+        psoDesc.Flags = static_cast<D3D12_PIPELINE_STATE_FLAGS>(D3D12_PIPELINE_STATE_FLAG_CLASSIC_RENDER_TARGETS);
 
     u64 key = ComputePSOKey(psoDesc);
 
@@ -121,14 +119,13 @@ ID3D12PipelineState* dx12PSOBuilder::CreateGraphicsPSO(const DX12_PSO_BUILD_DESC
 
 ID3D12PipelineState* dx12PSOBuilder::CreateComputePSO(const DX12_PSO_BUILD_DESC& Desc)
 {
-    D3D12_PIPELINE_STATE_DESC psoDesc = {};
+    D3D12_COMPUTE_PIPELINE_STATE_DESC psoDesc = {};
 
     psoDesc.CS = Desc.pCS ? CD3DX12_SHADER_BYTECODE(Desc.pCS) : CD3DX12_SHADER_BYTECODE();
     psoDesc.pRootSignature = Desc.pRootSignature;
-
     psoDesc.NodeMask = 0;
 
-    u64 key = ComputePSOKey(psoDesc);
+    u64 key = xxhash64(&psoDesc.CS, sizeof(psoDesc.CS), 0) ^ xxhash64(&psoDesc.pRootSignature, sizeof(psoDesc.pRootSignature), 0);
 
     xr_map<u64, ComPtr<ID3D12PipelineState>>::iterator it = m_psoCache.find(key);
     if (it != m_psoCache.end())

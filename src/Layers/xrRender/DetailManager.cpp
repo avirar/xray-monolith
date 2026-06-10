@@ -5,6 +5,9 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#ifndef USE_DX12
+#ifndef USE_DX12
+
 #include "DetailManager.h"
 #include "cl_intersect.h"
 
@@ -496,3 +499,7 @@ void CDetailManager::details_clear()
 		}
 	}
 }
+
+#endif // USE_DX12
+
+#endif // USE_DX12

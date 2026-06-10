@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#ifndef USE_DX12
+
 #include "../../xrEngine/render.h"
 #include "../../xrEngine/irenderable.h"
 #include "../../xrEngine/igame_persistent.h"
@@ -1069,3 +1071,5 @@ void R_dsgraph_structure::r_dsgraph_render_landscape(u32 pass, bool _clear)
 	if (_clear)
 		mapLandscape.clear();
 }
+
+#endif // USE_DX12

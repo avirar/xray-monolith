@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "dx10ShaderResourceStateCache.h"
 
+#if !defined(USE_DX12)
 dx10ShaderResourceStateCache SRVSManager;
 
 dx10ShaderResourceStateCache::dx10ShaderResourceStateCache()
@@ -224,3 +225,4 @@ void dx10ShaderResourceStateCache::SetCSResource(u32 uiSlot, ID3DShaderResourceV
 	}
 }
 #endif
+#endif // !USE_DX12

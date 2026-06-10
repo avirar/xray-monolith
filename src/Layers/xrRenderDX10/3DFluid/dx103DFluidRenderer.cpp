@@ -8,6 +8,7 @@
 
 #include "dx103DFluidData.h"
 
+#if !defined(USE_DX12)
 struct VsInput
 {
 	D3DXVECTOR3 pos;
@@ -682,3 +683,4 @@ void dx103DFluidRenderer::PrepareCBuffer(const dx103DFluidData &FluidData, u32 R
     RCache.set_c(strRTWidth, (float)RTWidth);
     RCache.set_c(strRTHeight, (float)RTHeight);
 }
+#endif // !USE_DX12

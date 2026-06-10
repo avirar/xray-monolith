@@ -539,7 +539,7 @@ void CModelPool::memory_stats(u32& vb_mem_video, u32& vb_mem_system, u32& ib_mem
 
 		if (vis_ptr == NULL)
 			continue;
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_DX12)
 		D3DINDEXBUFFER_DESC IB_desc;
 		D3DVERTEXBUFFER_DESC VB_desc;
 
@@ -567,8 +567,9 @@ void CModelPool::memory_stats(u32& vb_mem_video, u32& vb_mem_system, u32& ib_mem
 		D3D_BUFFER_DESC IB_desc;
 		D3D_BUFFER_DESC VB_desc;
 
-		vis_ptr->m_fast->p_rm_Indices->GetDesc(&IB_desc);
+		IB_desc = vis_ptr->m_fast->p_rm_Indices->GetDesc();
 
+#ifndef USE_DX12
 		ib_mem_video += IB_desc.ByteWidth;
 		ib_mem_system += IB_desc.ByteWidth;
 
@@ -576,6 +577,15 @@ void CModelPool::memory_stats(u32& vb_mem_video, u32& vb_mem_system, u32& ib_mem
 
 		vb_mem_video += IB_desc.ByteWidth;
 		vb_mem_system += IB_desc.ByteWidth;
+#else
+		ib_mem_video += IB_desc.Width;
+		ib_mem_system += IB_desc.Width;
+
+		VB_desc = vis_ptr->m_fast->p_rm_Vertices->GetDesc();
+
+		vb_mem_video += IB_desc.Width;
+		vb_mem_system += IB_desc.Width;
+#endif
 
 #endif
 	}

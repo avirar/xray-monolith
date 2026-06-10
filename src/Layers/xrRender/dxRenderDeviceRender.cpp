@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "dxRenderDeviceRender.h"
 
 #include "ResourceManager.h"
@@ -593,3 +595,5 @@ bool dxRenderDeviceRender::SwitchOutputMonitor(HMONITOR hTargetMon, HWND hWnd,
     return false;
 #endif
 }
+
+#endif // USE_DX12

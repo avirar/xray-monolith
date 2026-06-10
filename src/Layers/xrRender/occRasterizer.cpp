@@ -3,6 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "occRasterizer.h"
 
 #if DEBUG
@@ -235,3 +237,5 @@ BOOL occRasterizer::test(float _x0, float _y0, float _x1, float _y1, float _z)
 	return FALSE;
 	*/
 }
+
+#endif // USE_DX12

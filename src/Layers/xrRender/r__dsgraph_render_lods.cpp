@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
+
 #include "flod.h"
 
 #ifdef _EDITOR
@@ -137,3 +140,5 @@ void R_dsgraph_structure::r_dsgraph_render_lods(bool _setup_zb, bool _clear)
 
 	if (_clear) mapLOD.clear();
 }
+
+#endif // USE_DX12

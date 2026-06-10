@@ -86,6 +86,8 @@ IC HRESULT EndQuery(ID3DQuery* pQuery)
 
 #else	//	USE_DX10
 
+#ifndef USE_DX12
+
 IC HRESULT CreateQuery ( ID3DQuery **ppQuery, D3DQUERYTYPE Type)
 {
 	return HW.pDevice->CreateQuery(Type, ppQuery);
@@ -106,6 +108,7 @@ IC HRESULT EndQuery( ID3DQuery *pQuery)
 	return pQuery->Issue( D3DISSUE_END);
 }
 
+#endif // USE_DX12
 #endif	//	USE_DX10
 
 #endif	//	QueryHelper_included

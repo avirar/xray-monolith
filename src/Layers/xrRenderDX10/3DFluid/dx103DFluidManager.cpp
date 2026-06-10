@@ -10,6 +10,7 @@
 #include "dx103DFluidObstacles.h"
 #include "dx103DFluidEmitters.h"
 
+#if !defined(USE_DX12)
 dx103DFluidManager FluidManager;
 
 namespace
@@ -830,3 +831,4 @@ void dx103DFluidManager::UpdateProfiles()
 }
 
 #endif	//	DEBUG
+#endif // !USE_DX12

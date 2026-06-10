@@ -7,6 +7,7 @@
 
 #include "dx10TextureUtils.h"
 
+#if !defined(USE_DX12)
 CRT::CRT()
 {
 	pSurface = NULL;
@@ -319,3 +320,4 @@ void resptrcode_crtc::create(LPCSTR Name, u32 size, D3DFORMAT f)
 	_set		(DEV->_CreateRTC(Name,size,f));
 }
 */
+#endif // !USE_DX12

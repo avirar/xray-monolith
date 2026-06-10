@@ -10,10 +10,9 @@
 #include "../../xrCore/xrPool.h"
 #include "../xrRender/r_constants.h"
 
-#include "../xrRender/dxRenderDeviceRender.h"
-
 #include "../xrRenderDX10/dx10ConstantBuffer.h"
 
+#if !defined(USE_DX12)
 IC bool p_sort(ref_constant C1, ref_constant C2)
 {
 	return xr_strcmp(C1->name, C2->name) < 0;
@@ -406,3 +405,4 @@ BOOL R_constant_table::parse(void* _desc, u32 destination)
 	std::sort(table.begin(), table.end(), p_sort);
 	return TRUE;
 }
+#endif // !USE_DX12

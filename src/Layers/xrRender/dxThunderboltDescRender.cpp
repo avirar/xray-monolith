@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "dxThunderboltDescRender.h"
 
 void dxThunderboltDescRender::Copy(IThunderboltDescRender& _in)
@@ -19,3 +21,5 @@ void dxThunderboltDescRender::DestroyModel()
 {
 	::RImplementation.model_Delete(l_model);
 }
+
+#endif // USE_DX12

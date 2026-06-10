@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "r5.h"
 
-#ifdef USE_DX12
+#if 0 // USE_DX12 - disabled until DX12 infrastructure is complete
 
 #include "../xrRenderDX12/dx12HW.h"
 #include "../xrRenderDX12/Hybrid/dx12HybridRenderer.h"
@@ -126,4 +127,4 @@ float R5::GetFrameTime() const
     return HybridRenderer12.GetFrameTime();
 }
 
-#endif // USE_DX12
+#endif

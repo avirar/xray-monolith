@@ -2,8 +2,8 @@
 
 #ifdef USE_DX12
 
-#include "DX12CommonTypes.h"
-#include "dx12RayTracingShaders.h"
+#include "../DX12CommonTypes.h"
+#include "../Raytracing/dx12RayTracingShaders.h"
 
 struct DX12_REFLECTION_PIPELINE_DESC
 {

@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
+
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
 #include "fvf.h"
@@ -166,4 +169,6 @@ void CPortalTraverser::dbg_draw		()
 		RCache.dbg_Draw		(D3DPT_LINESTRIP,verts,4);
 	}
 }
-#endif
+#endif // DEBUG
+
+#endif // USE_DX12

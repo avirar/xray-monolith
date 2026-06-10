@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12GIResources.h"
 
@@ -73,14 +74,14 @@ void dx12GIResources::CreateIrradianceTexture(u32 Width, u32 Height)
 
     m_pIrradianceResource->SetName(L"GI_Irradiance");
 
-    HW12.GetDevice()->CreateUnorderedAccessView(
-        m_pIrradianceResource, nullptr, &m_IrradianceUAV);
+    HW12.m_pDevice->CreateUnorderedAccessView(
+        m_IrradianceUAV, m_pIrradianceResource, nullptr);
 
-    HW12.GetDevice()->CreateShaderResourceView(
-        m_pIrradianceResource, nullptr, &m_IrradianceSRV);
+    HW12.m_pDevice->CreateShaderResourceView(
+        m_IrradianceSRV, m_pIrradianceResource, nullptr);
 
-    HW12.GetDevice()->CreateRenderTargetView(
-        m_pIrradianceResource, nullptr, &m_IrradianceRTV);
+    HW12.m_pDevice->CreateRenderTargetView(
+        m_IrradianceRTV, m_pIrradianceResource, nullptr);
 }
 
 void dx12GIResources::CreateAOTexture(u32 Width, u32 Height)
@@ -119,14 +120,14 @@ void dx12GIResources::CreateAOTexture(u32 Width, u32 Height)
 
     m_pAOResource->SetName(L"GI_AO");
 
-    HW12.GetDevice()->CreateUnorderedAccessView(
-        m_pAOResource, nullptr, &m_AOUAV);
+    HW12.m_pDevice->CreateUnorderedAccessView(
+        m_AOUAV, m_pAOResource, nullptr);
 
-    HW12.GetDevice()->CreateShaderResourceView(
-        m_pAOResource, nullptr, &m_AOSRV);
+    HW12.m_pDevice->CreateShaderResourceView(
+        m_AOSRV, m_pAOResource, nullptr);
 
-    HW12.GetDevice()->CreateRenderTargetView(
-        m_pAOResource, nullptr, &m_AORTV);
+    HW12.m_pDevice->CreateRenderTargetView(
+        m_AORTV, m_pAOResource, nullptr);
 }
 
 dx12GIResources GIResources12;

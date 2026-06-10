@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "dx103DFluidObstacles.h"
 
+#if !defined(USE_DX12)
+
 #include "../../xrRender/dxRenderDeviceRender.h"
 #include "../../../xrEngine/xr_object.h"
 #include "../../../xrEngine/IPhysicsShell.h"
@@ -11,6 +13,7 @@
 #include "dx103DFluidData.h"
 #include "dx103DFluidGrid.h"
 
+#if !defined(USE_DX12)
 /*
 #ifdef	DEBUG
 #include "../../xrRender/dxDebugRender.h"
@@ -429,3 +432,5 @@ void dx103DFluidObstacles::RenderDynamicOOBB(const IPhysicsGeometry& Geometry, c
 
 	m_pGrid->DrawSlices();
 }
+
+#endif // !defined(USE_DX12)

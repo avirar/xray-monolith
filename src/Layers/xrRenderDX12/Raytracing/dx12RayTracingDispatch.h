@@ -2,7 +2,7 @@
 
 #ifdef USE_DX12
 
-#include "DX12CommonTypes.h"
+#include "../DX12CommonTypes.h"
 #include "dx12RayTracingPipeline.h"
 #include "dx12Scene.h"
 

@@ -2,6 +2,7 @@
 #define	dx103DFluidGrid_included
 #pragma once
 
+#if !defined(USE_DX12)
 struct VS_INPUT_FLUIDSIM_STRUCT;
 
 class dx103DFluidGrid
@@ -49,5 +50,5 @@ private:
 	int m_iNumVerticesBoundarySlices;
 	int m_iNumVerticesBoundaryLines;
 };
-
+#endif // !USE_DX12
 #endif	//	dx103DFluidGrid_included

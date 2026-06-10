@@ -3,6 +3,7 @@
 
 #include "dx103DFluidManager.h"
 
+#if !defined(USE_DX12)
 dx103DFluidVolume::dx103DFluidVolume()
 {
 }
@@ -210,3 +211,4 @@ void dx103DFluidVolume::Release()
 {
 	dxRender_Visual::Release();
 }
+#endif // !USE_DX12

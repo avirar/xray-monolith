@@ -126,11 +126,11 @@ public:
 	virtual void FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size,
 	                          u16 bone_id) =0;
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 protected:
 	void _DuplicateIndices(const char* N, IReader* data);
 
-	//	Index buffer replica since we can't read from index buffer in DX10
+	//	Index buffer replica since we can't read from index buffer in DX10/DX12
 	ref_smem<u16> m_Indices;
 #endif	//	USE_DX10
 };

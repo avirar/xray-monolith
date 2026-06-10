@@ -5,6 +5,7 @@
 
 using dx10StateUtils::operator==;
 
+#if !defined(USE_DX12)
 dx10SamplerStateCache SSManager;
 
 dx10SamplerStateCache::dx10SamplerStateCache():
@@ -219,7 +220,7 @@ void dx10SamplerStateCache::SetMipLODBias(float uiMipLODBias)
         // This can cause fragmentation if called too often
         rec.m_pState->Release();
         CreateState(desc, &rec.m_pState);
-    }
+}
 }
 
 
@@ -237,3 +238,4 @@ void dx10SamplerStateCache::ResetDeviceState()
 #endif
 	}
 }
+#endif // !USE_DX12

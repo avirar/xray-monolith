@@ -1,20 +1,27 @@
 #include "StdAfx.h"
 #include ".\r__occlusion.h"
 
+#ifndef USE_DX12
 #include "QueryHelper.h"
+#endif
 
 R_occlusion::R_occlusion(void)
 {
+#ifndef USE_DX12
 	enabled = TRUE;
+#endif
 }
 
 R_occlusion::~R_occlusion(void)
 {
+#ifndef USE_DX12
 	occq_destroy();
+#endif
 }
 
 void R_occlusion::occq_create(u32 limit)
 {
+#ifndef USE_DX12
 	enabled = strstr(Core.Params, "-no_occq") ? FALSE : TRUE;
 	pool.reserve(limit);
 	used.reserve(limit);
@@ -27,10 +34,12 @@ void R_occlusion::occq_create(u32 limit)
 		pool.push_back(q);
 	}
 	std::reverse(pool.begin(), pool.end());
+#endif
 }
 
 void R_occlusion::occq_destroy()
 {
+#ifndef USE_DX12
 	while (!used.empty())
 	{
 		_RELEASE(used.back().Q);
@@ -44,10 +53,12 @@ void R_occlusion::occq_destroy()
 	used.clear();
 	pool.clear();
 	fids.clear();
+#endif
 }
 
 u32 R_occlusion::occq_begin(u32& ID)
 {
+#ifndef USE_DX12
 	if (!enabled) return 0;
 
 	//	Igor: prevent release crash if we issue too many queries
@@ -80,10 +91,15 @@ u32 R_occlusion::occq_begin(u32& ID)
 	// Msg				("begin: [%2d] - %d", used[ID].order, ID);
 
 	return used[ID].order;
+#else
+	ID = iInvalidHandle;
+	return 0;
+#endif
 }
 
 void R_occlusion::occq_end(u32& ID)
 {
+#ifndef USE_DX12
 	if (!enabled) return;
 
 	//	Igor: prevent release crash if we issue too many queries
@@ -92,10 +108,12 @@ void R_occlusion::occq_end(u32& ID)
 	// Msg				("end  : [%2d] - %d", used[ID].order, ID);
 	//CHK_DX			(used[ID].Q->Issue	(D3DISSUE_END));
 	CHK_DX(EndQuery(used[ID].Q));
+#endif
 }
 
 R_occlusion::occq_result R_occlusion::occq_get(u32& ID)
 {
+#ifndef USE_DX12
 	if (!enabled) return 0xffffffff;
 
 	//	Igor: prevent release crash if we issue too many queries
@@ -141,4 +159,7 @@ R_occlusion::occq_result R_occlusion::occq_get(u32& ID)
 	fids.push_back(ID);
 	ID = 0;
 	return fragments;
+#else
+	return 0xffffffff;
+#endif
 }

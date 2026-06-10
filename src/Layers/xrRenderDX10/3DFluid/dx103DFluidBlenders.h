@@ -2,6 +2,7 @@
 #define	dx103DFluidBlenders_included
 #pragma once
 
+#if !defined(USE_DX12)
 class CBlender_fluid_advect : public IBlender
 {
 public:
@@ -81,5 +82,5 @@ public:
 
 	virtual void Compile(CBlender_Compile& C);
 };
-
+#endif // !USE_DX12
 #endif	//	dx103DFluidBlenders_included

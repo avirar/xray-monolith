@@ -1,6 +1,7 @@
 #ifndef	dx10MSAABlender_included
 #define	dx10MSAABlender_included
 
+#if !defined(USE_DX12)
 class CBlender_msaa : public IBlender
 {
 public:
@@ -10,5 +11,5 @@ public:
 
 	virtual void Compile(CBlender_Compile& C);
 };
-
+#endif // !USE_DX12
 #endif	//	dx10RainBlender_included

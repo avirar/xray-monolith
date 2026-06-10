@@ -2,6 +2,7 @@
 #define	dx10StateCache_included
 #pragma once
 
+#if !defined(USE_DX12)
 template <class IDeviceState, class StateDecs>
 class dx10StateCache
 {
@@ -43,5 +44,5 @@ extern dx10StateCache<ID3DDepthStencilState, D3D_DEPTH_STENCIL_DESC> DSSManager;
 extern dx10StateCache<ID3DBlendState, D3D_BLEND_DESC> BSManager;
 
 #include "dx10StateCacheImpl.h"
-
+#endif // !USE_DX12
 #endif	//	dx10StateCache_included

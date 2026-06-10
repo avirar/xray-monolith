@@ -20,6 +20,11 @@
 #	include "..\xrRenderPC_R4\r_backend_lod.h"
 #endif
 
+#ifdef USE_DX12
+#	include "..\xrRenderDX12\dx12R_Backend.h"
+#	include "..\xrRenderDX12\StateManager\dx12StateManager.h"
+#endif
+
 #include "fvf.h"
 
 const u32 CULL_CCW = D3DCULL_CCW;
@@ -58,7 +63,7 @@ struct R_statistics
 class ECORE_API CBackend
 {
 public:
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 	enum MaxTextures
 	{
 		//	Actually these values are 128
@@ -114,13 +119,17 @@ public:
 	DWORD dummy1; //	Padding to avoid warning	
 	DWORD dummy2; //	Padding to avoid warning	
 #endif
+
+#ifdef USE_DX12
+	D3D12_PRIMITIVE_TOPOLOGY m_PrimitiveTopology;
+#endif
 private:
 	// Render-targets
 	ID3DRenderTargetView* pRT[4];
 	ID3DDepthStencilView* pZB;
 
 	// Vertices/Indices/etc
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 	SDeclaration* decl;
 #else	//	USE_DX10
 	IDirect3DVertexDeclaration9* decl;
@@ -145,6 +154,15 @@ private:
 	ID3D11ComputeShader* cs;
 #	endif
 #endif	//	USE_DX10
+
+#ifdef USE_DX12
+	ID3DPipelineState* ps12;
+	ID3DPipelineState* vs12;
+	ID3D12GeometryShader* gs;
+	ID3D12HullShader* hs;
+	ID3D12DomainShader* ds;
+	ID3D12ComputeShader* cs;
+#endif
 
 #ifdef DEBUG
 	LPCSTR							ps_name;
@@ -288,7 +306,7 @@ public:
 	ICF void set_States(ID3DState* _state);
 	ICF void set_States(ref_state& _state) { set_States(_state->state); }
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_DX12)
 	ICF void set_Format(SDeclaration* _decl);
 #else	//	USE_DX10
 	ICF void set_Format(IDirect3DVertexDeclaration9* _decl);
@@ -318,6 +336,26 @@ public:
 	ICF bool is_TessEnabled();
 #else
 	ICF bool is_TessEnabled() { return false; }
+#endif
+
+#ifdef USE_DX12
+	ICF void set_PS(ID3DPipelineState* _ps, LPCSTR _n = 0);
+	ICF void set_VS(ID3DPipelineState* _vs, LPCSTR _n = 0);
+	ICF void set_VS(SVS* _vs);
+	ICF void set_GS(ID3D12GeometryShader* _gs, LPCSTR _n = 0);
+	ICF void set_HS(ID3D12HullShader* _hs, LPCSTR _n = 0);
+	ICF void set_DS(ID3D12DomainShader* _ds, LPCSTR _n = 0);
+	ICF void set_CS(ID3D12ComputeShader* _cs, LPCSTR _n = 0);
+	ICF void Compute(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
+	IC void ApplyVertexLayout();
+	ICF void ApplyRTandZB();
+	IC void ApplyDescriptorHeaps();
+	IC void ApplyPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY Topology);
+	IC void ResourceBarrier(ID3D12Resource* Resource, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter);
+	IC void ResourceBarriers(UINT NumBarriers, const D3D12_RESOURCE_BARRIER* Barriers);
+	IC void BeginRenderPass();
+	IC void EndRenderPass();
+	IC void Flush();
 #endif
 
 	ICF void set_VS(ref_vs& _vs);
@@ -491,6 +529,11 @@ private:
 
 	bool m_bChangedRTorZB;
 #endif	//	USE_DX10
+
+#ifdef USE_DX12
+private:
+	bool m_bChangedRTorZB;
+#endif
 };
 #pragma warning(pop)
 

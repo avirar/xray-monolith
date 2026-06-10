@@ -86,6 +86,7 @@ bool CGIFAnimationPlayer::Load(const char* fname)
 
         CHK_DX(HW.pDevice->CreateShaderResourceView(texture, nullptr, &f.srv));
 #else
+#ifndef USE_DX12
         HRESULT result = HW.pDevice->CreateTexture(
             width, height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture, nullptr);
         if (FAILED(result))
@@ -110,6 +111,7 @@ bool CGIFAnimationPlayer::Load(const char* fname)
         }
 
         R_CHK(texture->UnlockRect(0));
+#endif
 #endif
         f.surface = texture;
     }

@@ -916,8 +916,10 @@ public:
 		else
 		{
 			CCC_Float::Execute(args);
+#ifdef _EDITOR
 			if (g_pGamePersistent)
 				g_pGamePersistent->SetBaseDof(ps_r2_dof);
+#endif
 		}
 	}
 
@@ -948,8 +950,10 @@ public:
 		else
 		{
 			CCC_Float::Execute(args);
+#ifdef _EDITOR
 			if (g_pGamePersistent)
 				g_pGamePersistent->SetBaseDof(ps_r2_dof);
+#endif
 		}
 	}
 
@@ -988,8 +992,10 @@ public:
 		else
 		{
 			CCC_Float::Execute(args);
+#ifdef _EDITOR
 			if (g_pGamePersistent)
 				g_pGamePersistent->SetBaseDof(ps_r2_dof);
+#endif
 		}
 	}
 

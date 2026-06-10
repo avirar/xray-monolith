@@ -4,6 +4,7 @@
 //#include "dx10RSManager.h"
 #include "dx10StateCache.h"
 
+#if !defined(USE_DX12)
 dx10State::dx10State() :
 	m_pRasterizerState(0),
 	m_pDepthStencilState(0),
@@ -119,3 +120,4 @@ void dx10State::InitSamplers(tSamplerHArray& SamplerArray, SimulatorStates& stat
 		}
 	}
 }
+#endif // !USE_DX12

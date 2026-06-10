@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "dx10StateCache.h"
 
+#if !defined(USE_DX12)
 dx10StateCache<ID3DRasterizerState, D3D_RASTERIZER_DESC> RSManager;
 dx10StateCache<ID3DDepthStencilState, D3D_DEPTH_STENCIL_DESC> DSSManager;
 dx10StateCache<ID3DBlendState, D3D_BLEND_DESC> BSManager;
@@ -148,3 +149,4 @@ dx10StateCache< ID3DxxBlendState , D3D_BLEND_DESC >
 	}
 }
 */
+#endif // !USE_DX12

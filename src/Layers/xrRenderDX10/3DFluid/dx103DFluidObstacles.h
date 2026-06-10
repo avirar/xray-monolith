@@ -2,6 +2,7 @@
 #define	dx103DFluidObstacles_included
 #pragma once
 
+#if !defined(USE_DX12)
 class dx103DFluidGrid;
 class dx103DFluidData;
 __interface IPhysicsShell;
@@ -52,5 +53,5 @@ private:
 	xr_vector<const IPhysicsShell*> m_lstShells;
 	xr_vector<const IPhysicsElement*> m_lstElements;
 };
-
+#endif // !USE_DX12
 #endif	//	dx103DFluidObstacles_included

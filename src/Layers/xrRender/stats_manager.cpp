@@ -47,6 +47,7 @@ void stats_manager::increment_stats_rtarget(ID3DTexture2D* buff)
 	if (g_dedicated_server)
 		return;
 
+#ifndef USE_DX12
 	_D3DPOOL pool = D3DPOOL_MANAGED;
 #if defined(USE_DX10) || defined(USE_DX11)
 	D3D_TEXTURE2D_DESC desc;
@@ -59,6 +60,7 @@ void stats_manager::increment_stats_rtarget(ID3DTexture2D* buff)
 
 	u32 size = desc.Height * desc.Width * get_format_pixel_size(desc.Format);
 	increment_stats(size, enum_stats_buffer_type_rtarget, pool, buff);
+#endif
 }
 
 void stats_manager::increment_stats_vb(ID3DVertexBuffer* buff)
@@ -66,6 +68,7 @@ void stats_manager::increment_stats_vb(ID3DVertexBuffer* buff)
 	if (g_dedicated_server)
 		return;
 
+#ifndef USE_DX12
 #if defined(USE_DX10) || defined(USE_DX11)
 	D3D_BUFFER_DESC desc;
 	buff->GetDesc(&desc);
@@ -75,6 +78,7 @@ void stats_manager::increment_stats_vb(ID3DVertexBuffer* buff)
 	buff->GetDesc(&desc);
 	increment_stats(desc.Size, enum_stats_buffer_type_vertex, desc.Pool, buff);
 #endif
+#endif
 }
 
 void stats_manager::increment_stats_ib(ID3DIndexBuffer* buff)
@@ -82,6 +86,7 @@ void stats_manager::increment_stats_ib(ID3DIndexBuffer* buff)
 	if (g_dedicated_server)
 		return;
 
+#ifndef USE_DX12
 #if defined(USE_DX10) || defined(USE_DX11)
 	D3D_BUFFER_DESC desc;
 	buff->GetDesc(&desc);
@@ -91,6 +96,7 @@ void stats_manager::increment_stats_ib(ID3DIndexBuffer* buff)
 	buff->GetDesc(&desc);
 	increment_stats(desc.Size, enum_stats_buffer_type_index, desc.Pool, buff);
 #endif
+#endif
 }
 
 void stats_manager::decrement_stats_rtarget(ID3DTexture2D* buff)
@@ -98,6 +104,7 @@ void stats_manager::decrement_stats_rtarget(ID3DTexture2D* buff)
 	if (buff == NULL || g_dedicated_server)
 		return;
 
+#ifndef USE_DX12
 	buff->AddRef();
 	int refcnt = 0;
 	if ((refcnt = buff->Release()) > 1)
@@ -115,6 +122,7 @@ void stats_manager::decrement_stats_rtarget(ID3DTexture2D* buff)
 
 	u32 size = desc.Height * desc.Width * get_format_pixel_size(desc.Format);
 	decrement_stats(size, enum_stats_buffer_type_rtarget, pool, buff);
+#endif
 }
 
 void stats_manager::decrement_stats_vb(ID3DVertexBuffer* buff)
@@ -122,6 +130,7 @@ void stats_manager::decrement_stats_vb(ID3DVertexBuffer* buff)
 	if (buff == NULL || g_dedicated_server)
 		return;
 
+#ifndef USE_DX12
 	buff->AddRef();
 	int refcnt = 0;
 	if ((refcnt = buff->Release()) > 1)
@@ -136,6 +145,7 @@ void stats_manager::decrement_stats_vb(ID3DVertexBuffer* buff)
 	buff->GetDesc(&desc);
 	decrement_stats(desc.Size, enum_stats_buffer_type_vertex, desc.Pool, buff);
 #endif
+#endif
 }
 
 void stats_manager::decrement_stats_ib(ID3DIndexBuffer* buff)
@@ -143,6 +153,7 @@ void stats_manager::decrement_stats_ib(ID3DIndexBuffer* buff)
 	if (buff == NULL || g_dedicated_server)
 		return;
 
+#ifndef USE_DX12
 	buff->AddRef();
 	int refcnt = 0;
 	if ((refcnt = buff->Release()) > 1)
@@ -156,6 +167,7 @@ void stats_manager::decrement_stats_ib(ID3DIndexBuffer* buff)
 	D3DINDEXBUFFER_DESC desc;
 	buff->GetDesc(&desc);
 	decrement_stats(desc.Size, enum_stats_buffer_type_index, desc.Pool, buff);
+#endif
 #endif
 }
 

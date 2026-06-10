@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12RayTracingDispatch.h"
 
@@ -40,9 +41,8 @@ void dx12RayTracingDispatch::SetRootSignature(ID3D12RootSignature* pRootSignatur
 void dx12RayTracingDispatch::DispatchRays(const DX12_DISPATCH_RAYS_DESC& Desc)
 {
     D3D12_DISPATCH_RAYS_DESC dispatchDesc = {};
-    dispatchDesc.RayGenerationShaderRecord = Desc.RayGenShaderTableVirtualAddress;
-    dispatchDesc.RayGenerationShaderRecordStrideInBytes = Desc.RayGenShaderTableStride;
-    dispatchDesc.RayGenerationShaderRecordSizeInBytes = Desc.RayGenShaderTableSize;
+    dispatchDesc.RayGenerationShaderRecord.StartAddress = Desc.RayGenShaderTableVirtualAddress;
+    dispatchDesc.RayGenerationShaderRecord.SizeInBytes = Desc.RayGenShaderTableSize;
     dispatchDesc.MissShaderTable.StartAddress = Desc.MissShaderTableVirtualAddress;
     dispatchDesc.MissShaderTable.StrideInBytes = Desc.MissShaderTableStride;
     dispatchDesc.MissShaderTable.SizeInBytes = Desc.MissShaderTableSize;
@@ -87,9 +87,9 @@ void dx12RayTracingDispatch::DispatchRaysDesc(const D3D12_DISPATCH_RAYS_DESC& De
 void dx12RayTracingDispatch::DispatchGI(u32 Width, u32 Height)
 {
     D3D12_DISPATCH_RAYS_DESC dispatchDesc = {};
-    dispatchDesc.RayGenerationShaderRecord = RayTracingPipeline12.GetRayGenSBTGPUVirtualAddress();
-    dispatchDesc.RayGenerationShaderRecordStrideInBytes = RayTracingPipeline12.GetShaderTableStride();
-    dispatchDesc.RayGenerationShaderRecordSizeInBytes = RayTracingPipeline12.GetShaderTableStride();
+    dispatchDesc.RayGenerationShaderRecord.StartAddress = RayTracingPipeline12.GetRayGenSBTGPUVirtualAddress();
+    dispatchDesc.RayGenerationShaderRecord.SizeInBytes = RayTracingPipeline12.GetShaderTableStride();
+    # dispatchDesc.RayGenerationShaderRecordSizeInBytes = RayTracingPipeline12.GetShaderTableStride();
     dispatchDesc.MissShaderTable.StartAddress = RayTracingPipeline12.GetMissSBTGPUVirtualAddress();
     dispatchDesc.MissShaderTable.StrideInBytes = RayTracingPipeline12.GetShaderTableStride();
     dispatchDesc.MissShaderTable.SizeInBytes = RayTracingPipeline12.GetShaderTableStride() * RayTracingPipeline12.GetMissRecordCount();
@@ -109,9 +109,9 @@ void dx12RayTracingDispatch::DispatchGI(u32 Width, u32 Height)
 void dx12RayTracingDispatch::DispatchShadow(u32 Width, u32 Height)
 {
     D3D12_DISPATCH_RAYS_DESC dispatchDesc = {};
-    dispatchDesc.RayGenerationShaderRecord = RayTracingPipeline12.GetRayGenSBTGPUVirtualAddress();
-    dispatchDesc.RayGenerationShaderRecordStrideInBytes = RayTracingPipeline12.GetShaderTableStride();
-    dispatchDesc.RayGenerationShaderRecordSizeInBytes = RayTracingPipeline12.GetShaderTableStride();
+    dispatchDesc.RayGenerationShaderRecord.StartAddress = RayTracingPipeline12.GetRayGenSBTGPUVirtualAddress();
+    dispatchDesc.RayGenerationShaderRecord.SizeInBytes = RayTracingPipeline12.GetShaderTableStride();
+    # dispatchDesc.RayGenerationShaderRecordSizeInBytes = RayTracingPipeline12.GetShaderTableStride();
     dispatchDesc.MissShaderTable.StartAddress = RayTracingPipeline12.GetMissSBTGPUVirtualAddress();
     dispatchDesc.MissShaderTable.StrideInBytes = RayTracingPipeline12.GetShaderTableStride();
     dispatchDesc.MissShaderTable.SizeInBytes = RayTracingPipeline12.GetShaderTableStride() * RayTracingPipeline12.GetMissRecordCount();
@@ -131,9 +131,9 @@ void dx12RayTracingDispatch::DispatchShadow(u32 Width, u32 Height)
 void dx12RayTracingDispatch::DispatchReflection(u32 Width, u32 Height, UINT SamplesPerPixel)
 {
     D3D12_DISPATCH_RAYS_DESC dispatchDesc = {};
-    dispatchDesc.RayGenerationShaderRecord = RayTracingPipeline12.GetRayGenSBTGPUVirtualAddress();
-    dispatchDesc.RayGenerationShaderRecordStrideInBytes = RayTracingPipeline12.GetShaderTableStride();
-    dispatchDesc.RayGenerationShaderRecordSizeInBytes = RayTracingPipeline12.GetShaderTableStride();
+    dispatchDesc.RayGenerationShaderRecord.StartAddress = RayTracingPipeline12.GetRayGenSBTGPUVirtualAddress();
+    dispatchDesc.RayGenerationShaderRecord.SizeInBytes = RayTracingPipeline12.GetShaderTableStride();
+    # dispatchDesc.RayGenerationShaderRecordSizeInBytes = RayTracingPipeline12.GetShaderTableStride();
     dispatchDesc.MissShaderTable.StartAddress = RayTracingPipeline12.GetMissSBTGPUVirtualAddress();
     dispatchDesc.MissShaderTable.StrideInBytes = RayTracingPipeline12.GetShaderTableStride();
     dispatchDesc.MissShaderTable.SizeInBytes = RayTracingPipeline12.GetShaderTableStride() * RayTracingPipeline12.GetMissRecordCount();
@@ -157,7 +157,7 @@ void dx12RayTracingDispatch::SetRootConstantBufferView(u32 ParameterIndex, D3D12
 
 void dx12RayTracingDispatch::SetRootDescriptorTable(u32 ParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE BaseDescriptor)
 {
-    Backend12.GetCommandList()->SetGraphicsRootDescriptorTable(ParameterIndex, BaseDescriptor.ptr);
+    Backend12.GetCommandList()->SetGraphicsRootDescriptorTable(ParameterIndex, BaseDescriptor);
 }
 
 void dx12RayTracingDispatch::SetRoot32BitConstant(u32 ParameterIndex, u32 Data, u32 AddressOffset)

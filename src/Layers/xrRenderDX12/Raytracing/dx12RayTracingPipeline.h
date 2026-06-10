@@ -2,7 +2,7 @@
 
 #ifdef USE_DX12
 
-#include "DX12CommonTypes.h"
+#include "../DX12CommonTypes.h"
 #include "dx12RayTracingShaders.h"
 
 struct DX12_RAYTRACING_PIPELINE_DESC
@@ -37,13 +37,13 @@ public:
                                  UINT HitGroupCount,
                                  const DX12_HIT_GROUP_DESC* pHitGroups);
 
-    ID3D12Resource* GetRayGenSBT() const { return m_pRayGenSBT.Get(); }
-    ID3D12Resource* GetHitGroupSBT() const { return m_pHitGroupSBT.Get(); }
-    ID3D12Resource* GetMissSBT() const { return m_pMissSBT.Get(); }
+    ID3D12Resource* GetRayGenSBT() const;
+    ID3D12Resource* GetHitGroupSBT() const;
+    ID3D12Resource* GetMissSBT() const;
 
-    D3D12_GPU_VIRTUAL_ADDRESS GetRayGenSBTGPUVirtualAddress() const { return m_rayGenSBTGPUAddress; }
-    D3D12_GPU_VIRTUAL_ADDRESS GetHitGroupSBTGPUVirtualAddress() const { return m_hitGroupSBTGPUAddress; }
-    D3D12_GPU_VIRTUAL_ADDRESS GetMissSBTGPUVirtualAddress() const { return m_missSBTGPUAddress; }
+    D3D12_GPU_VIRTUAL_ADDRESS GetRayGenSBTGPUVirtualAddress() const;
+    D3D12_GPU_VIRTUAL_ADDRESS GetHitGroupSBTGPUVirtualAddress() const;
+    D3D12_GPU_VIRTUAL_ADDRESS GetMissSBTGPUVirtualAddress() const;
 
     UINT GetRayGenRecordCount() const { return m_rayGenRecordCount; }
     UINT GetHitGroupRecordCount() const { return m_hitGroupRecordCount; }

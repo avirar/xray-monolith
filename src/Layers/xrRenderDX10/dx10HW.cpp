@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#if !defined(USE_DX12)
+
 #pragma warning(disable:4995)
 #include <d3dx9.h>
 #ifdef USE_DX11
@@ -1512,3 +1514,5 @@ void CHW::UpdateViews()
     pDepthStencil->Release();
 }
 #endif
+
+#endif // !defined(USE_DX12)

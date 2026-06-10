@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "light_GI_dx12.h"
 
-#ifdef USE_DX12
+#if 0 // USE_DX12 - disabled until dx12GI and dx12RendererSelector are available
 
 #include "../xrRenderDX12/dx12HW.h"
 #include "../xrRenderDX12/GI/dx12GI.h"
@@ -67,4 +68,4 @@ namespace R5GI
     }
 }
 
-#endif // USE_DX12
+#endif

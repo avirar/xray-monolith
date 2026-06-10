@@ -189,6 +189,7 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 //////////////////////////////////////////////////////////////////////////
 // R3
 //////////////////////////////////////////////////////////////////////////
+#if !defined(USE_DX12)
 #include "uber_deffer.h"
 
 void CBlender_Tree::Compile(CBlender_Compile& C)
@@ -297,4 +298,5 @@ void CBlender_Tree::Compile(CBlender_Compile& C)
 		break;
 	}
 }
+#endif // USE_DX12
 #endif

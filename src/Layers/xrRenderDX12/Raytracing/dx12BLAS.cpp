@@ -1,5 +1,8 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12BLAS.h"
+
+#if 0 // DXR API incompatible with DirectX-Headers; needs full rewrite
 
 #ifdef USE_DX12
 
@@ -201,4 +204,5 @@ void dx12BLASManager::BuildAll(ID3D12GraphicsCommandList4* pCommandList)
 
 dx12BLASManager BLASManager12;
 
+#endif // 0
 #endif // USE_DX12

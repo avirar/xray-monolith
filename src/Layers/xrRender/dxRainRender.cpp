@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "dxRainRender.h"
 
 #include "../../xrEngine/Rain.h"
@@ -338,3 +340,5 @@ const Fsphere& dxRainRender::GetDropBounds() const
 {
 	return DM_Drop->bv_sphere;
 }
+
+#endif // USE_DX12

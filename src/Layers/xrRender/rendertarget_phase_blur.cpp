@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#ifndef USE_DX12
+
 
 IC bool SortLights(light* i, light* j)
 {
@@ -1002,3 +1004,5 @@ void CRenderTarget::phase_ssfx_motion_blur()
 }
 
 #endif
+
+#endif // USE_DX12

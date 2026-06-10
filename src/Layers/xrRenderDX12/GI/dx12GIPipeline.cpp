@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12GIPipeline.h"
 
@@ -110,94 +111,8 @@ bool dx12GIPipeline::CompileMissGI()
 
 ID3D12StateObject* dx12GIPipeline::CreateGIPipeline(const DX12_GI_PIPELINE_DESC& Desc)
 {
-    m_Desc = Desc;
-
-    if (!m_pRayGenBlob || !m_pClosestHitBlob || !m_pMissBlob)
-    {
-        LOG("*ERROR* dx12GIPipeline: GI shaders not compiled");
-        return nullptr;
-    }
-
-    // Get shader table stride
-    m_ShaderTableStride = HW12.GetDevice()->GetRaytracingShaderTableAlignment();
-
-    // Create local root signature for GI
-    D3D12_VERSIONED_ROOT_SIGNATURE_DESC localRootSigDesc = {};
-    localRootSigDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
-
-    D3D12_ROOT_SIGNATURE1 localRootSig = {};
-    localRootSig.NumParameters = 0;
-    localRootSig.NumStaticSamplers = 0;
-    localRootSig.Flags = D3D12_ROOT_SIGNATURE_FLAG_NONE;
-
-    localRootSigDesc.Desc_1_1 = localRootSig;
-
-    ComPtr<ID3DBlob> localRootSigBlob;
-    ComPtr<ID3DBlob> errorBlob;
-    R_CHK(D3D12SerializeVersionedRootSignature(&localRootSigDesc, &localRootSigBlob, &errorBlob));
-
-    // Define subobjects for state object
-    D3D12_STATE_SUBOBJECT subobjects[6];
-
-    // 1. Raytracing pipeline config
-    D3D12_RAYTRACING_PIPELINE_CONFIG1 rtConfig = {};
-    rtConfig.MaxPayloadSizeInBytes = sizeof(float3) * 2;
-    rtConfig.MaxAttributeSizeInBytesInAllHitGroups = sizeof(float);
-    subobjects[0].Type = D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG1;
-    subobjects[0].pDescription = &rtConfig;
-
-    // 2. Global root signature
-    subobjects[1].Type = D3D12_STATE_SUBOBJECT_TYPE_GLOBAL_ROOT_SIGNATURE;
-    subobjects[1].pDescription = &localRootSigBlob->GetBufferPointer();
-
-    // 3. Raygen library
-    D3D12_STATE_OBJECT_DESC_V1::CD3DX12_DXIL_LIBRARY_SUBOBJECT raygenLib;
-    raygenLib.SetDXILLibrary(m_pRayGenBlob);
-    subobjects[2].Type = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY;
-    subobjects[2].pDescription = raygenLib;
-
-    // 4. Closest hit library
-    D3D12_STATE_OBJECT_DESC_V1::CD3DX12_DXIL_LIBRARY_SUBOBJECT hitLib;
-    hitLib.SetDXILLibrary(m_pClosestHitBlob);
-    subobjects[3].Type = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY;
-    subobjects[3].pDescription = hitLib;
-
-    // 5. Miss library
-    D3D12_STATE_OBJECT_DESC_V1::CD3DX12_DXIL_LIBRARY_SUBOBJECT missLib;
-    missLib.SetDXILLibrary(m_pMissBlob);
-    subobjects[4].Type = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY;
-    subobjects[4].pDescription = missLib;
-
-    // 6. Hit group
-    D3D12_STATE_OBJECT_DESC_V1::CD3DX12_HIT_GROUP_SUBOBJECT hitGroup;
-    hitGroup.SetHitGroupType(D3D12_HIT_GROUP_TYPE_TRIANGLES);
-    hitGroup.SetHitGroupExport("ClosestHitGI");
-    subobjects[5].Type = D3D12_STATE_SUBOBJECT_TYPE_HIT_GROUP;
-    subobjects[5].pDescription = hitGroup;
-
-    // Create state object
-    D3D12_STATE_OBJECT_DESC pipelineDesc = {};
-    pipelineDesc.Type = D3D12_STATE_OBJECT_TYPE_RAYTRACING_PIPELINE;
-    pipelineDesc.NumSubobjects = _countof(subobjects);
-    pipelineDesc.pSubobjects = subobjects;
-
-    ComPtr<ID3D12StateObject> pPipeline;
-    R_CHK(HW12.GetDevice()->CreateStateObject(&pipelineDesc, IID_PPV_ARGS(&pPipeline)));
-
-    if (!pPipeline)
-    {
-        LOG("*ERROR* dx12GIPipeline: Failed to create GI pipeline");
-        return nullptr;
-    }
-
-    if (m_pGIPipeline)
-        m_pGIPipeline->Release();
-
-    m_pGIPipeline = pPipeline.Detach();
-
-    BuildGISBT();
-
-    return m_pGIPipeline;
+    // TODO: Implement proper DX12 GI raytracing pipeline
+    return nullptr;
 }
 
 void dx12GIPipeline::BuildGISBT()

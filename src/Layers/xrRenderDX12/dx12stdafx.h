@@ -11,7 +11,9 @@
 #pragma warning(disable:4237)
 
 #include <d3d12.h>
+#if defined(__has_include) && __has_include(<d3d12_raytracing.h>)
 #include <d3d12_raytracing.h>
+#endif
 #include <d3d12sdklayers.h>
 #include <d3d12video.h>
 #include <dxgi1_6.h>

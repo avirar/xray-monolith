@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#ifndef USE_DX12
+
 #include "Blender.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -130,3 +132,5 @@ void		IBlender::Destroy	(IBlender*& B)
 	xr_delete	(B);
 }
 #endif
+
+#endif // USE_DX12

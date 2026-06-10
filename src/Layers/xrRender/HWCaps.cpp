@@ -144,6 +144,7 @@ void CHWCaps::Update()
 	);
 
 	// *******1********** Vertex cache
+#ifndef USE_DX12
 	ID3DQuery* q_vc;
 	D3DDEVINFO_VCACHE vc;
 	HRESULT _hr = HW.pDevice->CreateQuery(D3DQUERYTYPE_VCACHE, &q_vc);
@@ -162,6 +163,9 @@ void CHWCaps::Update()
 		else geometry.dwVertexCache = 16;
 	}
 	Msg("* GPU vertex cache: %s, %d", (1 == vc.OptMethod) ? "recognized" : "unrecognized", u32(geometry.dwVertexCache));
+#else
+	geometry.dwVertexCache = 16;
+#endif
 
 	// *******1********** Compatibility : vertex shader
 	if (0 == raster_major) geometry_major = 0; // Disable VS if no PS

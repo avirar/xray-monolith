@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "./dx10MSAABlender.h"
 
+#if !defined(USE_DX12)
 void CBlender_msaa::Compile(CBlender_Compile& C)
 {
 	IBlender::Compile(C);
@@ -20,3 +21,4 @@ void CBlender_msaa::Compile(CBlender_Compile& C)
 		break;
 	}
 }
+#endif // !USE_DX12

@@ -3,6 +3,7 @@
 
 #include "../xrRender/Utils/dxHashHelper.h"
 
+#if !defined(USE_DX12)
 namespace dx10StateUtils
 {
 	D3D_FILL_MODE ConvertFillMode(D3DFILLMODE Mode)
@@ -700,4 +701,5 @@ namespace dx10StateUtils
 			desc.MaxAnisotropy = 1;
 		}
 	}
-};
+}
+#endif // !USE_DX12;

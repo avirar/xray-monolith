@@ -3,11 +3,49 @@
 #ifdef USE_DX12
 
 #include <d3d12.h>
+#if defined(__has_include) && __has_include(<d3d12_raytracing.h>)
+#include <d3d12_raytracing.h>
+#endif
 #include <d3d12sdklayers.h>
 #include <d3dcompiler.h>
-#include <d3dx12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
+
+// Bridge Windows SDK enum names to DirectX-Headers names
+// DirectX-Headers uses D3D_PRIMITIVE_TOPOLOGY_* (D3D9 names)
+// Windows SDK uses D3D12_PRIMITIVE_TOPOLOGY_*
+#ifndef D3D12_PRIMITIVE_TOPOLOGY_UNDEFINED
+#define D3D12_PRIMITIVE_TOPOLOGY_UNDEFINED D3D_PRIMITIVE_TOPOLOGY_UNDEFINED
+#define D3D12_PRIMITIVE_TOPOLOGY_POINT_LIST D3D_PRIMITIVE_TOPOLOGY_POINTLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_LINE_LIST D3D_PRIMITIVE_TOPOLOGY_LINELIST
+#define D3D12_PRIMITIVE_TOPOLOGY_LINE_STRIP D3D_PRIMITIVE_TOPOLOGY_LINESTRIP
+#define D3D12_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+#define D3D12_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP
+#define D3D12_PRIMITIVE_TOPOLOGY_LINE_LIST_ADJ D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ
+#define D3D12_PRIMITIVE_TOPOLOGY_LINE_STRIP_ADJ D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ
+#define D3D12_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_ADJ D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ
+#define D3D12_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_ADJ D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ
+#define D3D12_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST
+#define D3D12_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST
+#endif
+
+// Include d3dx12.h helper classes
+#include "d3dx12.h"
 
 namespace Microsoft::WRL::Wrappers
 {
@@ -25,13 +63,21 @@ struct ID3DDomainShader {};
 struct ID3DComputeShader {};
 typedef ID3D12Resource ID3DRenderTargetView;
 typedef ID3D12Resource ID3DDepthStencilView;
-struct ID3DQuery {};
-struct ID3DState {};
+struct ID3DQuery {
+    virtual HRESULT STDMETHODCALLTYPE GetData(void*, UINT, UINT) = 0;
+    virtual HRESULT STDMETHODCALLTYPE Issue(UINT) = 0;
+    virtual void STDMETHODCALLTYPE Release() = 0;
+};
 
 struct __declspec(uuid("00000000-0000-0000-0000-000000000001")) ID3D12SamplerState : public IUnknown {};
 struct __declspec(uuid("00000000-0000-0000-0000-000000000002")) ID3D12DepthStencilState : public IUnknown {};
 struct __declspec(uuid("00000000-0000-0000-0000-000000000003")) ID3D12RasterizerState : public IUnknown {};
 struct __declspec(uuid("00000000-0000-0000-0000-000000000004")) ID3D12BlendState : public IUnknown {};
+
+struct ID3DState {
+    virtual void Apply() = 0;
+    virtual void Release() = 0;
+};
 
 typedef D3D12_BLEND D3D_BLEND;
 typedef D3D12_BLEND_OP D3D_BLEND_OP;
@@ -66,6 +112,10 @@ typedef ID3D12Resource ID3DTexture1D;
 typedef ID3D12Resource ID3DTexture3D;
 typedef ID3D12Resource ID3DBaseTexture;
 typedef ID3D12Resource ID3DResource;
+typedef ID3DBlob ID3D12GeometryShader;
+typedef ID3DBlob ID3D12HullShader;
+typedef ID3DBlob ID3D12DomainShader;
+typedef ID3DBlob ID3D12ComputeShader;
 typedef ID3D12DescriptorHeap ID3DDescriptorHeap;
 typedef ID3D12GraphicsCommandList4 ID3DDeviceContext;
 typedef ID3D12CommandQueue ID3DCommandQueue;
@@ -173,7 +223,8 @@ typedef D3D12_GPU_DESCRIPTOR_HANDLE D3D_GPU_DESCRIPTOR_HANDLE;
 #define D3D_MAP_READ_WRITE 2
 #define D3D_MAP_WRITE_DISCARD 3
 #define D3D_MAP_WRITE_NO_OVERWRITE 4
-typedef int D3D_MAP;
+typedef enum D3D12_MAP { D3D12_MAP_READ = 0, D3D12_MAP_READ_WRITE, D3D12_MAP_WRITE, D3D12_MAP_WRITE_DISCARD, D3D12_MAP_WRITE_NO_OVERWRITE } D3D12_MAP;
+typedef D3D12_MAP D3D_MAP;
 
 #define D3D_CLEAR_DEPTH D3D_CLEAR_DEPTH
 #define D3D_CLEAR_STENCIL D3D_CLEAR_STENCIL
@@ -233,5 +284,595 @@ typedef D3D12_SHADER_TYPE_DESC D3D_SHADER_TYPE_DESC;
 #define D3D_DRIVER_TYPE_REFERENCE D3D_DRIVER_TYPE_REFERENCE
 
 #define D3D12_ONLY(expr) expr
+
+// Missing from older DirectX-Headers
+#ifndef D3D12_PIPELINE_STATE_FLAG_CLASSIC_RENDER_TARGETS
+#define D3D12_PIPELINE_STATE_FLAG_CLASSIC_RENDER_TARGETS 0x20
+#endif
+
+// Missing DXGI constants
+#ifndef DXGI_MODE_SCALING_NONE
+#define DXGI_MODE_SCALING_NONE 0
+#endif
+
+#ifndef DXGI_MODE_SCALING_ASPECT_RATIO_STRETCH
+#define DXGI_MODE_SCALING_ASPECT_RATIO_STRETCH 2
+#endif
+
+#ifndef DXGI_MODE_SCALING_UNSCALED
+#define DXGI_MODE_SCALING_UNSCALED DXGI_MODE_SCALING_NONE
+#endif
+
+// Common buffer descriptor typedef (matches DX10/DX11)
+typedef D3D12_RESOURCE_DESC D3D_BUFFER_DESC;
+
+#ifndef DXGI_PRESENT_INTERVAL_IMMEDIATELY
+#define DXGI_PRESENT_INTERVAL_IMMEDIATELY 0xFFFFFFFF
+#endif
+
+#ifndef DXGI_PRESENT_INTERVAL_ONE
+#define DXGI_PRESENT_INTERVAL_ONE 1
+#endif
+
+// Missing D3D12 constants
+#ifndef D3D12_CREATE_DEVICE_ROOT_SIGNATURE_ALL
+#define D3D12_CREATE_DEVICE_ROOT_SIGNATURE_ALL 0
+#endif
+
+// D3D12_RESOURCE_DESC1 to D3D12_RESOURCE_DESC conversion helper
+#ifndef D3D12_RESOURCE_DESC_CAST_DEFINED
+#define D3D12_RESOURCE_DESC_CAST_DEFINED
+inline const D3D12_RESOURCE_DESC* CastResourceDesc(const D3D12_RESOURCE_DESC1* desc1) {
+    static D3D12_RESOURCE_DESC desc;
+    desc.Dimension = desc1->Dimension;
+    desc.Alignment = desc1->Alignment;
+    desc.Width = desc1->Width;
+    desc.Height = desc1->Height;
+    desc.DepthOrArraySize = desc1->DepthOrArraySize;
+    desc.MipLevels = desc1->MipLevels;
+    desc.Format = desc1->Format;
+    desc.SampleDesc.Count = desc1->SampleDesc.Count;
+    desc.SampleDesc.Quality = desc1->SampleDesc.Quality;
+    desc.Layout = desc1->Layout;
+    desc.Flags = desc1->Flags;
+    return &desc;
+}
+#endif
+
+// D3D12 raytracing type stubs (individual guards to avoid conflicts with DirectX-Headers)
+#if !defined(__d3d12_h__)
+struct D3D12_RAYTRACING_PIPELINE_CONFIG {
+    UINT MaxPayloadSizeInBytes;
+    UINT MaxAttributeSizeInBytes;
+    UINT MissingHitActionOnMiss;
+};
+
+struct D3D12_RAYTRACING_PIPELINE_CONFIG1 {
+    UINT MaxPayloadSizeInBytes;
+    UINT MaxAttributeSizeInBytes;
+    UINT MissingHitActionOnMiss;
+    UINT MaxAttributeSizeInBytesInAllHitGroups;
+};
+#endif // __d3d12_h__
+
+#ifndef D3D12_MISSING_HIT_ACTION_ON_MISS_INVOCATION_MISS_SHADER
+#define D3D12_MISSING_HIT_ACTION_ON_MISS_INVOCATION_MISS_SHADER 0
+#endif
+
+#if !defined(__d3d12_h__)
+enum D3D12_STATE_SUBOBJECT_TYPE {
+    D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG = 0,
+    D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG1,
+    D3D12_STATE_SUBOBJECT_TYPE_GLOBAL_ROOT_SIGNATURE,
+    D3D12_STATE_SUBOBJECT_TYPE_LOCAL_ROOT_SIGNATURE,
+    D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_SHADER_CONFIG,
+    D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_CONFIG,
+    D3D12_STATE_SUBOBJECT_TYPE_DXIL,
+    D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY,
+    D3D12_STATE_SUBOBJECT_TYPE_EXPORT_TABLE,
+    D3D12_STATE_SUBOBJECT_TYPE_SUBOBJECT_TO_EXPORTS_ASSOCIATION,
+    D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_LOCAL_ROOT_SIGNATURES,
+    D3D12_STATE_SUBOBJECT_TYPE_VALIDATION_FLAGS,
+    D3D12_STATE_SUBOBJECT_TYPE_NODE_MASK,
+    D3D12_STATE_SUBOBJECT_TYPE_ARGUMENTS,
+    D3D12_STATE_SUBOBJECT_TYPE_PIPELINE_CONFIG,
+    D3D12_STATE_SUBOBJECT_TYPE_RATE_LIMIT,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_Raytracing,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_4,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_5,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_6,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_7,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_8,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_9,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_10,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_11,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_12,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_13,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_14,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_15,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_16,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_17,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_18,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_19,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_20,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_21,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_22,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_23,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_24,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_25,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_26,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_27,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_28,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_29,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_30,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_31,
+    D3D12_STATE_SUBOBJECT_TYPE_CUSTOM_DXR1_1_32,
+};
+#endif // __d3d12_h__
+
+#ifndef D3D12_STATE_OBJECT_CONFIGURATION_DEFINED
+#define D3D12_STATE_OBJECT_CONFIGURATION_DEFINED
+struct D3D12_STATE_OBJECT_CONFIGURATION {
+    D3D12_STATE_SUBOBJECT_TYPE Type;
+    void* pDescription;
+};
+#endif
+
+#ifndef D3D12_SUBOBJECT_DESC_DEFINED
+#define D3D12_SUBOBJECT_DESC_DEFINED
+struct D3D12_SUBOBJECT_DESC {
+    D3D12_STATE_SUBOBJECT_TYPE Type;
+    void* pDescription;
+};
+#endif
+
+#if !defined(__d3d12_h__)
+struct D3D12_STATE_SUBOBJECT {
+    D3D12_STATE_SUBOBJECT_TYPE Type;
+    void* pDescription;
+};
+
+struct D3D12_GLOBAL_ROOT_SIGNATURE {
+    ID3D12RootSignature* pGlobalRootSignature;
+};
+
+struct D3D12_LOCAL_ROOT_SIGNATURE {
+    ID3D12RootSignature* pLocalRootSignature;
+};
+
+struct D3D12_RAYTRACING_SHADER_CONFIG {
+    UINT MaxPayloadSizeInBytes;
+    UINT MaxAttributeSizeInBytes;
+};
+#endif // __d3d12_h__
+
+#ifndef D3D12_RAYTRACING_CONFIG_DEFINED
+#define D3D12_RAYTRACING_CONFIG_DEFINED
+struct D3D12_RAYTRACING_CONFIG {
+    UINT MaxTraceRecursionDepth;
+};
+#endif
+
+#ifndef D3D12_SHADER_IDENTIFIER_DEFINED
+#define D3D12_SHADER_IDENTIFIER_DEFINED
+struct D3D12_SHADER_IDENTIFIER {
+    UINT IdentifierSize;
+    void* pIdentifierData;
+};
+#endif
+
+#ifndef D3D12_SHADER_BINDING_TABLE_RECORD_DEFINED
+#define D3D12_SHADER_BINDING_TABLE_RECORD_DEFINED
+struct D3D12_SHADER_BINDING_TABLE_RECORD {
+    union {
+        D3D12_GPU_VIRTUAL_ADDRESS ShaderAddress;
+        D3D12_SHADER_IDENTIFIER ShaderID;
+    };
+    UINT DispatchRPCHints[4];
+};
+#endif
+
+// DXR acceleration structure types (individual guards)
+#if !defined(__d3d12_h__)
+enum D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE {
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_INVALID = 0,
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL = 1,
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL = 2,
+};
+#endif // __d3d12_h__
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION_DEFINED
+enum D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION {
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION_INLINE = 0,
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION_BUFFER = 1,
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_MODE_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_MODE_DEFINED
+enum D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_MODE {
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_MODE_BUILD = 0,
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_MODE_UPDATE = 1,
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESCRIPTOR_RANGE_TYPE_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESCRIPTOR_RANGE_TYPE_DEFINED
+enum D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESCRIPTOR_RANGE_TYPE {
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESCRIPTOR_RANGE_TYPE_INSTANCES = 0,
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESCRIPTOR_RANGE_TYPE_TRIANGLES = 1,
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESC_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESC_DEFINED
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESC {
+    D3D12_GPU_VIRTUAL_ADDRESS SourceAccelerationStructure;
+    D3D12_GPU_VIRTUAL_ADDRESS DestAccelerationStructureData;
+    UINT64 NumDescriptorTableEntries;
+};
+#endif
+
+#if !defined(__d3d12_h__)
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO {
+    UINT64 AccelerationStructurePrebuildSizeAfterCompile[3];
+    UINT64 ScratchGraphicsMemorySizeAfterCompile;
+    UINT64 ScratchRaytracingMemorySizeAfterCompile;
+};
+#endif // __d3d12_h__
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_PROPERTIES_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_PROPERTIES_DEFINED
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_PROPERTIES {
+    UINT64 AccelerationStructurePrebuildSizeAfterCompile[3];
+    UINT64 OutputAccelerationStructureSizeInBytes;
+    UINT64 ValidAccelerationStructureWriteIndex;
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DEFINED
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES {
+    D3D12_GPU_VIRTUAL_ADDRESS SourceGeometryLocation;
+    UINT64 IndexCount;
+    D3D12_GPU_VIRTUAL_ADDRESS IndexBuffer;
+    DXGI_FORMAT IndexFormat;
+    D3D12_GPU_VIRTUAL_ADDRESS VertexBuffer;
+    UINT64 VertexCount;
+    DXGI_FORMAT VertexFormat;
+    D3D12_GPU_VIRTUAL_ADDRESS Transform;
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY_DEFINED
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY {
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_DESCRIPTOR_RANGE_TYPE Type;
+    union {
+        D3D12_RAYTRACING_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES Triangles;
+    };
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION ResourceLocation;
+    union {
+        D3D12_GPU_VIRTUAL_ADDRESS AnimatedTransformsGPUDirectVirtualAddress;
+        D3D12_GPU_VIRTUAL_ADDRESS Transform;
+    };
+    UINT Flags;
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_GEOMETRY_DESCRIPTOR_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_GEOMETRY_DESCRIPTOR_DEFINED
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_GEOMETRY_DESCRIPTOR {
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_INPUT_RESOURCE_LOCATION ResourceLocation;
+    D3D12_GPU_VIRTUAL_ADDRESS GeometryData;
+    UINT64 NumTriangles;
+    D3D12_GPU_VIRTUAL_ADDRESS TransformAccess;
+    UINT Flags;
+};
+#endif
+
+#ifndef D3D12_RAYTRACING_ACCELERATION_STRUCTURE_INSTANCE_DEFINED
+#define D3D12_RAYTRACING_ACCELERATION_STRUCTURE_INSTANCE_DEFINED
+struct D3D12_RAYTRACING_ACCELERATION_STRUCTURE_INSTANCE {
+    FLOAT Transform[3][4];
+    UINT InstanceID : 24;
+    UINT InstanceMask : 8;
+    UINT Flags : 24;
+    UINT AccelerationStructureIndex : 8;
+    D3D12_GPU_VIRTUAL_ADDRESS AccelerationStructureReference;
+    UINT64 Reserved;
+};
+#endif
+
+#if !defined(__d3d12_h__)
+union D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS {
+    UINT Value;
+    struct {
+        UINT MAKE_NOT_OPAQUE : 1;
+        UINT PREFER_FAST_TRACE : 1;
+        UINT PREFER_FAST_BUILD : 1;
+        UINT ALLOW_UPDATE : 1;
+        UINT ALLOW_COMPACTING : 1;
+        UINT PRESERVE_INPUT_DATA : 1;
+        UINT MINIMIZE_MEMORY : 1;
+        UINT TRIM_DEGENERATE : 1;
+        UINT FORCE_OPAQUE : 1;
+    };
+};
+#endif // __d3d12_h__
+
+// Custom DX12 types not provided by SDK
+struct D3D12_DXIL_SUBOBJECT_DXIL_LIBRARY {
+    void* pDXILLibrary;
+    UINT NumExports;
+    void* pExports;
+};
+
+enum D3D12_STATE_OBJECT_CONFIG_LOOKUP_TYPE {
+    D3D12_STATE_OBJECT_CONFIG_LOOKUP_TYPE_EXPORTED = 0,
+    D3D12_STATE_OBJECT_CONFIG_LOOKUP_TYPE_DWORD,
+    D3D12_STATE_OBJECT_CONFIG_LOOKUP_TYPE_SHADER_IDENTIFIER,
+};
+
+// Extend D3D12_STATE_OBJECT_DESC with raytracing fields
+struct D3D12_STATE_OBJECT_DESC_EXT : public D3D12_STATE_OBJECT_DESC {
+    D3D12_STATE_OBJECT_CONFIG_LOOKUP_TYPE ConfigLookup;
+    void* pRaytracingStateSubobject;
+};
+
+// D3D12_STATE_OBJECT_DESC_V1 helper
+struct D3D12_STATE_OBJECT_DESC_V1 {
+    static D3D12_STATE_OBJECT_DESC CreateFromArray(UINT objectCount, D3D12_STATE_SUBOBJECT* subobjects) {
+        D3D12_STATE_OBJECT_DESC desc = {};
+        desc.Type = D3D12_STATE_OBJECT_TYPE_COLLECTION;
+        return desc;
+    }
+};
+
+// D3D12_ROOT_SIGNATURE1
+typedef D3D12_ROOT_SIGNATURE_DESC D3D12_ROOT_SIGNATURE1;
+
+// CD3DX12_INPUT_LAYOUT_DESC helper - may be missing from older d3dx12.h
+#ifndef __CD3DX12_INPUT_LAYOUT_DESC_DEFINED
+#define __CD3DX12_INPUT_LAYOUT_DESC_DEFINED
+struct CD3DX12_INPUT_LAYOUT_DESC : public D3D12_INPUT_LAYOUT_DESC
+{
+    CD3DX12_INPUT_LAYOUT_DESC() = default;
+    explicit CD3DX12_INPUT_LAYOUT_DESC(const D3D12_INPUT_LAYOUT_DESC& o) noexcept : D3D12_INPUT_LAYOUT_DESC(o) {}
+    explicit CD3DX12_INPUT_LAYOUT_DESC(const D3D12_INPUT_ELEMENT_DESC* p, UINT n) noexcept
+    {
+        this->pInputElementDescs = p;
+        this->NumElements = n;
+    }
+};
+#endif
+
+// LOG macro - map to Msg
+#ifndef LOG
+#define LOG Msg
+#endif
+
+// xxhash64 simple hash function
+#ifndef XXHASH64_DEFINED
+#define XXHASH64_DEFINED
+inline uint64_t xxhash64(const void* input, size_t length, uint64_t seed)
+{
+    const uint8_t* data = static_cast<const uint8_t*>(input);
+    uint64_t h = seed ^ (length * 0xff51afd7ed558ccdULL);
+    size_t i = 0;
+    for (; i + 15 < length; i += 16)
+    {
+        uint64_t k1 = *(const uint64_t*)(data + i);
+        uint64_t k2 = *(const uint64_t*)(data + i + 8);
+        k1 *= 0xcc9e2d5178f2f9f2ULL; k1 = (k1 << 31) | (k1 >> 33); k1 *= 0x1b873593f9446c15ULL; h ^= k1;
+        h = (h << 27) | (h >> 37);
+        k2 *= 0x85553c3e1e098d6bULL; k2 = (k2 << 33) | (k2 >> 29); k2 *= 0x517cc1b727220a95ULL; h ^= k2;
+        h = (h << 31) | (h >> 33);
+        h = h * 5 + 0x326648237ab10a44ULL;
+    }
+    for (; i < length; ++i)
+    {
+        uint8_t c = data[i];
+        h ^= c * 0xff51afd7ed558ccdULL;
+        h = (h << 31) | (h >> 33);
+        h = h * 5 + 0x326648237ab10a44ULL;
+    }
+    h ^= length;
+    h ^= h >> 33;
+    h *= 0xff51afd7ed558ccdULL;
+    h ^= h >> 29;
+    h *= 0xc4ceb9fe1a85ec53ULL;
+    h ^= h >> 32;
+    return h;
+}
+#endif
+
+// Dxc compiler interfaces (stub when dxcapi.h not included)
+#ifndef __IDxcLibrary3_DEFINED
+#define __IDxcLibrary3_DEFINED
+struct __declspec(uuid("73E2C377-CB49-4F51-9045-22B2E645E4C9")) IDxcLibrary3 : public IUnknown {};
+#endif
+
+#ifndef __IDxcCompiler3_DEFINED
+#define __IDxcCompiler3_DEFINED
+struct __declspec(uuid("8CA280D0-936D-4C4F-8687-5E2E7693F2D9")) IDxcCompiler3 : public IUnknown {};
+#endif
+
+// Forward declarations for DX12 stubs
+struct CRenderTarget;
+struct CHOM;
+struct CHWOCC;
+struct CStats;
+struct CLights;
+struct CVisuals;
+struct CDetails;
+struct CPortals;
+struct CShader;
+struct CShaderInstance;
+struct _VertexStream;
+struct _IndexStream;
+struct SWI;
+struct FSlideWindowItem;
+class dxRender_Visual;
+
+// PS::CPEDef and PS::CPGDef are defined in ParticleEffectDef.h and ParticleGroup.h
+// Forward declarations to avoid redefinition conflicts
+namespace PS {
+    class CPEDef;
+    class CPGDef;
+}
+
+// CModels stub for RImplementation.Models->dump()
+struct CModels {
+    void dump() {}
+};
+
+// ISpatial - include full definition needed for spatial.sphere access
+#include "../../xrCDB/ISpatial.h"
+
+// CHOM forward declaration (fully defined in HOM.h)
+// CHOM class removed from here to avoid redefinition
+
+// CLights stub - light manager
+class CLights {
+public:
+};
+
+// CPortal forward declaration (fully defined in r__sector.h)
+class CPortal;
+class CPortals {
+public:
+    CPortal* getPortal(u32) { return nullptr; }
+};
+
+// CRender stub (real CRender in R5 will inherit from IRender_interface)
+class CRender {
+public:
+    CModels* Models;
+    CLights* Lights;
+    CHOM* HOM;
+    CPortals* Portals;
+    xr_vector<ISpatial*> lstSpatial;
+    u32 phase;
+    static const u32 PHASE_NORMAL = 0;
+    BOOL val_bHUD;
+    Fmatrix ViewBase;
+    void add_SkeletonWallmark(void*) {}
+
+    // Vertex/Index buffer access (matching R4 signatures)
+    D3DVERTEXELEMENT9* getVB_Format(int id, BOOL _alt = FALSE) { return nullptr; }
+    ID3DVertexBuffer* getVB(int id, BOOL _alt = FALSE) { return nullptr; }
+    ID3DIndexBuffer* getIB(int id, BOOL _alt = FALSE) { return nullptr; }
+    CPortal* getPortal(u32) { return nullptr; }
+    dxRender_Visual* getVisual(u32) { return nullptr; }
+    FSlideWindowItem* getSWI(int id) { return nullptr; }
+
+    // Model creation
+    dxRender_Visual* model_CreatePE(LPCSTR) { return nullptr; }
+    dxRender_Visual* model_CreatePG(LPCSTR) { return nullptr; }
+
+    // Wallmarks
+    void r_dsgraph_render_wmarks() {}
+
+    // Phase management
+    void r_pmask(bool, bool, bool = false) {}
+
+    // Render target phases
+    virtual void rmNear() {}
+    virtual void rmNormal() {}
+};
+class CEnvDescriptor;
+class dxRainRender;
+extern bool g_dedicated_server;
+
+// IRainRender stub - base class for dxRainRender (DX12-only, real class guarded by #if !defined(USE_DX12))
+class CEffect_Rain;
+class IRainRender {
+public:
+    virtual ~IRainRender() {}
+    virtual void Copy(IRainRender&) {}
+    virtual void Render(CEffect_Rain&) {}
+};
+
+// dxRainRender stub for DX12 - minimal implementation
+class dxRainRender : public IRainRender {
+public:
+    dxRainRender() {}
+    virtual ~dxRainRender() {}
+    virtual void Copy(IRainRender&) {}
+    virtual void Render(CEffect_Rain&) {}
+    virtual const Fsphere& GetDropBounds() const { static Fsphere s; return s; }
+};
+
+// DxStation stub for dx12ConsoleVars
+class DxStation {
+public:
+    virtual ~DxStation() {}
+};
+
+// ScreenshotMode enum for DX12
+enum ScreenshotMode { SM_NORMAL = 0, SM_FOR_MPSENDING };
+enum DxEncoding { eDXE_A8R8G8B8 = 0, eDXE_A16B16G16R16F };
+
+// g_pGamePersistent is declared in xrEngine/IGame_Persistent.h as IGame_Persistent*
+// Include that header for access to Environment() and other members
+// extern ENGINE_API IGame_Persistent* g_pGamePersistent;
+
+// Console command classes are defined in xr_ioc_cmd.h
+// CConsole, CCC_Integer, CCC_Float, CCC_Token are available from there
+
+// D3D_INPUT_ELEMENT_DESC for DX12 compatibility with dx10BufferUtils
+#ifndef D3D_INPUT_ELEMENT_DESC_DEFINED
+#define D3D_INPUT_ELEMENT_DESC_DEFINED
+typedef D3D12_INPUT_ELEMENT_DESC D3D_INPUT_ELEMENT_DESC;
+#endif
+
+extern CRender RImplementation;
+
+// DX12 global subsystem forward declarations (defined in their respective modules)
+class dx12ShaderCompiler;
+class dx12BLASManager;
+class dx12RayTracingShaders;
+class dx12RayTracingPipeline;
+class dx12RayTracingDispatch;
+class dx12GIResources;
+class dx12GIPipeline;
+class dx12GI;
+class dx12ReflectionResources;
+class dx12ReflectionPipeline;
+class dx12Reflections;
+class dx12ShadowPipeline;
+class dx12Shadows;
+class dx12RenderPassManager;
+class dx12RendererSelector;
+class dx12ConsoleVars;
+class dx12HybridRenderer;
+
+extern dx12ShaderCompiler ShaderCompiler12;
+extern dx12BLASManager BLASManager12;
+extern dx12RayTracingShaders RayTracingShaders12;
+extern dx12RayTracingPipeline RayTracingPipeline12;
+extern dx12RayTracingDispatch RayTracingDispatch12;
+extern dx12GIResources GIResources12;
+extern dx12GIPipeline GIPipeline12;
+extern dx12GI GI12;
+extern dx12ReflectionResources ReflectionResources12;
+extern dx12ReflectionPipeline ReflectionPipeline12;
+extern dx12Reflections Reflections12;
+extern dx12ShadowPipeline ShadowPipeline12;
+extern dx12Shadows Shadows12;
+extern dx12RenderPassManager RenderPassManager12;
+extern dx12RendererSelector RendererSelector12;
+extern dx12ConsoleVars DX12CV;
+extern dx12HybridRenderer HybridRenderer12;
+
+// float3 type for HLSL interoperability
+struct float3 { float x, y, z; };
+
+// Device global (CRenderDevice)
+extern CRenderDevice Device;
 
 #endif // USE_DX12

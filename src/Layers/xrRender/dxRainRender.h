@@ -2,6 +2,7 @@
 #define dxRainRender_included
 #pragma once
 
+#if !defined(USE_DX12)
 #include "..\..\Include\xrRender\RainRender.h"
 
 class dxRainRender : public IRainRender
@@ -26,4 +27,5 @@ private:
 	ref_shader SH_Splash;
 };
 
+#endif // USE_DX12
 #endif	//	RainRender_included

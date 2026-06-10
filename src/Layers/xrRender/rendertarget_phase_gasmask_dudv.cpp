@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#ifndef USE_DX12
+
 void CRenderTarget::phase_gasmask_dudv()
 {
 	//Constants
@@ -54,3 +56,5 @@ void CRenderTarget::phase_gasmask_dudv()
 	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
 #endif
 };
+
+#endif // USE_DX12

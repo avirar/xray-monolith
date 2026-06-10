@@ -1,6 +1,7 @@
 #ifndef	dx10RainBlender_included
 #define	dx10RainBlender_included
 
+#if !defined(USE_DX12)
 class CBlender_rain : public IBlender
 {
 public:
@@ -30,5 +31,5 @@ public:
 	LPCSTR Name;
 	LPCSTR Definition;
 };
-
+#endif // !USE_DX12
 #endif	//	dx10RainBlender_included

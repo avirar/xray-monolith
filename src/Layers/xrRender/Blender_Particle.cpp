@@ -151,6 +151,7 @@ void CBlender_Particle::Compile(CBlender_Compile& C)
 	};
 }
 #else
+#if !defined(USE_DX12)
 
 void CBlender_Particle::Compile(CBlender_Compile& C)
 {
@@ -230,4 +231,5 @@ void CBlender_Particle::Compile(CBlender_Compile& C)
 		break;
 	};
 }
+#endif // USE_DX12
 #endif

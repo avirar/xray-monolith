@@ -14,6 +14,7 @@ int rsDIB_Size = 512;
 
 void _VertexStream::Create()
 {
+#ifndef USE_DX12
 	//dxRenderDeviceRender::Instance().Resources->Evict		();
 	DEV->Evict();
 
@@ -39,17 +40,21 @@ void _VertexStream::Create()
 	mDiscardID = 0;
 
 	Msg("* DVB created: %dK", mSize / 1024);
+#endif // USE_DX12
 }
 
 void _VertexStream::Destroy()
 {
+#ifndef USE_DX12
 	HW.stats_manager.decrement_stats_vb(pVB);
 	_RELEASE(pVB);
 	_clear();
+#endif // USE_DX12
 }
 
 void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 {
+#ifndef USE_DX12
 #ifdef USE_DX11
 	D3D11_MAPPED_SUBRESOURCE MappedSubRes;
 #endif
@@ -119,10 +124,15 @@ void* _VertexStream::Lock(u32 vl_Count, u32 Stride, u32& vOffset)
 	VERIFY(pData);
 
 	return LPVOID(pData);
+#else
+	vOffset = 0;
+	return nullptr;
+#endif // USE_DX12
 }
 
 void _VertexStream::Unlock(u32 Count, u32 Stride)
 {
+#ifndef USE_DX12
 #ifdef DEBUG
 	PGO					(Msg("PGO:VB_UNLOCK:%d",Count));
 	VERIFY				(1==dbg_lock);
@@ -139,6 +149,7 @@ void _VertexStream::Unlock(u32 Count, u32 Stride)
 #else	//	USE_DX10
 	pVB->Unlock();
 #endif	//	USE_DX10
+#endif // USE_DX12
 }
 
 void _VertexStream::reset_begin()
@@ -172,6 +183,7 @@ void _VertexStream::_clear()
 //////////////////////////////////////////////////////////////////////////
 void _IndexStream::Create()
 {
+#ifndef USE_DX12
 	//dxRenderDeviceRender::Instance().Resources->Evict		();
 	DEV->Evict();
 
@@ -198,17 +210,21 @@ void _IndexStream::Create()
 	mDiscardID = 0;
 
 	Msg("* DIB created: %dK", mSize / 1024);
+#endif // USE_DX12
 }
 
 void _IndexStream::Destroy()
 {
+#ifndef USE_DX12
 	HW.stats_manager.decrement_stats_ib(pIB);
 	_RELEASE(pIB);
 	_clear();
+#endif // USE_DX12
 }
 
 u16* _IndexStream::Lock(u32 Count, u32& vOffset)
 {
+#ifndef USE_DX12
 #ifdef USE_DX11
 	D3D11_MAPPED_SUBRESOURCE MappedSubRes;
 #endif
@@ -247,10 +263,15 @@ u16* _IndexStream::Lock(u32 Count, u32& vOffset)
 	vOffset = mPosition;
 
 	return LPWORD(pLockedData);
+#else
+	vOffset = 0;
+	return nullptr;
+#endif // USE_DX12
 }
 
 void _IndexStream::Unlock(u32 RealCount)
 {
+#ifndef USE_DX12
 	PGO(Msg("PGO:IB_UNLOCK:%d",RealCount));
 	mPosition += RealCount;
 	VERIFY(pIB);
@@ -261,6 +282,7 @@ void _IndexStream::Unlock(u32 RealCount)
 #else	//	USE_DX10
 	pIB->Unlock();
 #endif	//	USE_DX10
+#endif // USE_DX12
 }
 
 void _IndexStream::reset_begin()

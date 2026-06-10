@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "dxThunderboltRender.h"
 
 #include "../../xrEngine/thunderbolt.h"
@@ -128,3 +130,5 @@ void dxThunderboltRender::Render(CEffect_Thunderbolt& owner)
 #endif	//	USE_DX10
 	RCache.Render(D3DPT_TRIANGLELIST, VS_Offset + 4, 0, 4, 0, 2);
 }
+
+#endif // USE_DX12

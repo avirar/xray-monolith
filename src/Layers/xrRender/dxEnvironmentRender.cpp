@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "dxEnvironmentRender.h"
 
 #include "dxRenderDeviceRender.h"
@@ -415,3 +417,5 @@ void dxEnvironmentRender::OnDeviceDestroy()
 	clouds_sh.destroy();
 	clouds_geom.destroy();
 }
+
+#endif // USE_DX12

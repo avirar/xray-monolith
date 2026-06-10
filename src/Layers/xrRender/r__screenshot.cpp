@@ -241,6 +241,8 @@ void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* me
 
 #else	//	USE_DX10
 
+#ifndef USE_DX12
+
 void CRender::ScreenshotImpl(ScreenshotMode mode, LPCSTR name, CMemoryWriter* memory_writer)
 {
 	if (!Device.b_is_Ready) return;
@@ -409,8 +411,10 @@ _end_:
 	_RELEASE(pFB);
 }
 
+#endif // USE_DX12
 #endif	//	USE_DX10
 
+#ifndef USE_DX12
 void CRender::Screenshot(ScreenshotMode mode, LPCSTR name)
 {
 	ScreenshotImpl(mode, name, NULL);
@@ -431,6 +435,7 @@ void CRender::ScreenshotAsyncBegin()
 	VERIFY(!m_bMakeAsyncSS);
 	m_bMakeAsyncSS = true;
 }
+#endif // USE_DX12
 
 #if defined(USE_DX10) || defined(USE_DX11)
 
@@ -477,6 +482,8 @@ void CRender::ScreenshotAsyncEnd(CMemoryWriter& memory_writer)
 }
 
 #else	//	USE_DX10
+
+#ifndef USE_DX12
 
 void CRender::ScreenshotAsyncEnd(CMemoryWriter& memory_writer)
 {
@@ -558,11 +565,14 @@ void CRender::ScreenshotAsyncEnd(CMemoryWriter& memory_writer)
 	hr = pFB->UnlockRect();
 }
 
+#endif // USE_DX12
 #endif	//	USE_DX10
 
 void DoAsyncScreenshot()
 {
+#ifndef USE_DX12
 	RImplementation.Target->DoAsyncScreenshot();
+#endif
 }
 
 // Antglobes: Export Screenshot Func + variable resolution & encoding
@@ -672,6 +682,8 @@ void CRender::TakeScreenshot(LPCSTR path, Fvector2 dimensions, DxEncoding encodi
 	_RELEASE(pSrcSmallTexture);
 }
 #else //DX
+
+#ifndef USE_DX12
 // Antglobes: Export Screenshot Func + variable resolution & encoding
 void CRender::TakeScreenshot(LPCSTR path, Fvector2 dimensions, DxEncoding encoding)
 {
@@ -770,4 +782,6 @@ void CRender::TakeScreenshot(LPCSTR path, Fvector2 dimensions, DxEncoding encodi
 _end_:
 	_RELEASE(pFB);
 }
+
+#endif // USE_DX12
 #endif

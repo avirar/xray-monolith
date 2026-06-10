@@ -209,11 +209,13 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 				scissor = R_scissor;
 
 				// Cull by HOM (slower algo)
+#ifndef USE_DX12
 				if (
 					(PortalTraverser.i_options & CPortalTraverser::VQ_HOM) &&
 					(!RImplementation.HOM.visible(*P))
 				)
 					continue;
+#endif
 			}
 			else
 			{
@@ -234,11 +236,13 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 				if (scissor.min.y >= scissor.max.y) continue;
 
 				// Cull by HOM (faster algo)
+#ifndef USE_DX12
 				if (
 					(PortalTraverser.i_options & CPortalTraverser::VQ_HOM) &&
 					(!RImplementation.HOM.visible(scissor, depth))
 				)
 					continue;
+#endif
 			}
 		}
 		else
@@ -246,11 +250,13 @@ void CSector::traverse(CFrustum& F, _scissor& R_scissor)
 			scissor = R_scissor;
 
 			// Cull by HOM (slower algo)
+#ifndef USE_DX12
 			if (
 				(PortalTraverser.i_options & CPortalTraverser::VQ_HOM) &&
 				(!RImplementation.HOM.visible(*P))
 			)
 				continue;
+#endif
 		}
 
 		// Create _new_ frustum and recurse

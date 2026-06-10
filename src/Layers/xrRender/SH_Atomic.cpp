@@ -31,7 +31,9 @@ SVS::~SVS()
 	//_RELEASE(signature);
 	//	Now it is release automatically
 #endif	//	USE_DX10
+#ifndef USE_DX12
 	_RELEASE(vs);
+#endif
 }
 
 
@@ -39,7 +41,9 @@ SVS::~SVS()
 //	SPS
 SPS::~SPS()
 {
+#ifndef USE_DX12
 	_RELEASE(ps);
+#endif
 	DEV->_DeletePS(this);
 }
 

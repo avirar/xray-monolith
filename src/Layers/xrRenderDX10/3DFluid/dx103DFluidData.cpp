@@ -3,6 +3,7 @@
 
 #include "dx103DFluidManager.h"
 
+#if !defined(USE_DX12)
 namespace
 {
 	const xr_token simulation_type_token [ ] =
@@ -232,3 +233,4 @@ void dx103DFluidData::ReparseProfile(const xr_string &Profile)
 	ParseProfile(Profile);
 }
 #endif	//	DEBUG
+#endif // !USE_DX12

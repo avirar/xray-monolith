@@ -6,7 +6,6 @@
 #define _PORTAL_H_
 #pragma once
 
-class CPortal;
 class CSector;
 
 struct _scissor : public Fbox2

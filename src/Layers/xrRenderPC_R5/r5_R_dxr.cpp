@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "r5_R_dxr.h"
 
-#ifdef USE_DX12
+#if 0 // USE_DX12 - disabled until DX12 infrastructure is complete
 
 #include "../xrRenderDX12/dx12HW.h"
 #include "../xrRenderDX12/Raytracing/dx12Scene.h"
@@ -116,4 +117,4 @@ namespace R5DXR
     }
 }
 
-#endif // USE_DX12
+#endif

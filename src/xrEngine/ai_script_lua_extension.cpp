@@ -8,6 +8,8 @@
 
 #include <stdarg.h>
 #include "stdafx.h"
+
+#ifndef USE_DX12
 #include "ai_script_lua_extension.h"
 #include "ai_script_space.h"
 
@@ -479,3 +481,5 @@ bool Script::bfIsObjectPresent(CLuaVirtualMachine* tpLuaVM, LPCSTR namespace_nam
 		S = I + 1;
 	}
 }
+
+#endif // USE_DX12

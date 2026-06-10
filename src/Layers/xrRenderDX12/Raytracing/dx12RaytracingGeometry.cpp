@@ -1,5 +1,7 @@
+#include "stdafx.h"
 #include "../dx12stdafx.h"
 #include "dx12RaytracingGeometry.h"
+#include <algorithm>
 
 #ifdef USE_DX12
 
@@ -17,7 +19,7 @@ dx12RaytracingGeometry::~dx12RaytracingGeometry()
 {
     if (m_pTransformMapping)
     {
-        m_pInstanceTransformBuffer->Unmap(0, nullptr, nullptr);
+        m_pInstanceTransformBuffer->Unmap(0, nullptr);
         m_pTransformMapping = nullptr;
     }
 }
@@ -67,22 +69,20 @@ void dx12RaytracingGeometry::UpdateInstanceTransform(UINT InstanceIndex, const F
     if (InstanceIndex >= m_instanceCount) return;
 
     D3D12_RAYTRACING_INSTANCE_DESC& instance = m_instances[InstanceIndex].InstanceDesc;
-    instance.InstanceMatrix[0] = Transform.m[0][0];
-    instance.InstanceMatrix[1] = Transform.m[1][0];
-    instance.InstanceMatrix[2] = Transform.m[2][0];
-    instance.InstanceMatrix[3] = Transform.m[3][0];
-    instance.InstanceMatrix[4] = Transform.m[0][1];
-    instance.InstanceMatrix[5] = Transform.m[1][1];
-    instance.InstanceMatrix[6] = Transform.m[2][1];
-    instance.InstanceMatrix[7] = Transform.m[3][1];
-    instance.InstanceMatrix[8] = Transform.m[0][2];
-    instance.InstanceMatrix[9] = Transform.m[1][2];
-    instance.InstanceMatrix[10] = Transform.m[2][2];
-    instance.InstanceMatrix[11] = Transform.m[3][2];
-    instance.InstanceMatrix[12] = Transform.m[0][3];
-    instance.InstanceMatrix[13] = Transform.m[1][3];
-    instance.InstanceMatrix[14] = Transform.m[2][3];
-    instance.InstanceMatrix[15] = Transform.m[3][3];
+    // DX12 uses Transform[3][4] (row-major 3x4), not InstanceMatrix[16]
+    // Map column-major Fmatrix to row-major Transform: Transform[row][col] = m[col][row]
+    instance.Transform[0][0] = Transform.m[0][0];
+    instance.Transform[0][1] = Transform.m[1][0];
+    instance.Transform[0][2] = Transform.m[2][0];
+    instance.Transform[0][3] = Transform.m[3][0];
+    instance.Transform[1][0] = Transform.m[0][1];
+    instance.Transform[1][1] = Transform.m[1][1];
+    instance.Transform[1][2] = Transform.m[2][1];
+    instance.Transform[1][3] = Transform.m[3][1];
+    instance.Transform[2][0] = Transform.m[0][2];
+    instance.Transform[2][1] = Transform.m[1][2];
+    instance.Transform[2][2] = Transform.m[2][2];
+    instance.Transform[2][3] = Transform.m[3][2];
 
     m_instances[InstanceIndex].bDirty = true;
     m_transformsDirty = true;
@@ -136,7 +136,7 @@ void dx12RaytracingGeometry::UploadInstanceTransforms()
         m_pTransformMapping[i] = m_instances[i].InstanceDesc;
     }
 
-    m_pInstanceTransformBuffer->Unmap(0, nullptr, nullptr);
+    m_pInstanceTransformBuffer->Unmap(0, nullptr);
     m_pTransformMapping = nullptr;
     m_transformsDirty = false;
 
@@ -151,7 +151,7 @@ void dx12RaytracingGeometry::ResizeInstanceBuffer()
     m_pInstanceTransformBuffer.Reset();
     m_pTransformMapping = nullptr;
 
-    UINT bufferSize = max(InitialTransformBufferSize, m_instanceCount * sizeof(D3D12_RAYTRACING_INSTANCE_DESC));
+    UINT bufferSize = std::max(InitialTransformBufferSize, m_instanceCount * sizeof(D3D12_RAYTRACING_INSTANCE_DESC));
 
     D3D12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
     D3D12_RESOURCE_DESC resDesc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);

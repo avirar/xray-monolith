@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "r5_R_render.h"
 
-#ifdef USE_DX12
+#if 0 // USE_DX12 - disabled until pipeline implementations are complete
 
 #include "../xrRenderDX12/dx12HW.h"
 #include "../xrRenderDX12/Hybrid/dx12HybridRenderer.h"
@@ -51,4 +52,4 @@ namespace R5Render
     }
 }
 
-#endif // USE_DX12
+#endif

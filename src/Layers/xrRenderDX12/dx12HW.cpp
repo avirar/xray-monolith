@@ -1,6 +1,27 @@
+#include "stdafx.h"
 #include "dx12HW.h"
 
 #ifdef USE_DX12
+
+#include "ShaderCompiler/dx12ShaderCompiler.h"
+#include "Raytracing/dx12BLAS.h"
+#include "Raytracing/dx12RayTracingShaders.h"
+#include "Raytracing/dx12RayTracingPipeline.h"
+#include "Raytracing/dx12RayTracingDispatch.h"
+#include "GI/dx12GIResources.h"
+#include "GI/dx12GIPipeline.h"
+#include "GI/dx12GI.h"
+#include "Reflections/dx12ReflectionResources.h"
+#include "Reflections/dx12ReflectionPipeline.h"
+#include "Reflections/dx12Reflections.h"
+#include "Shadows/dx12ShadowPipeline.h"
+#include "Shadows/dx12Shadows.h"
+#include "Hybrid/dx12HybridRenderer.h"
+#include "Hybrid/dx12RenderPassManager.h"
+#include "dx12RendererSelector.h"
+#include "dx12ConsoleVars.h"
+#include "PSOBuilder/dx12PSOBuilder.h"
+#include "SamplerManager/dx12SamplerManager.h"
 
 #include <dxgidebug.h>
 #include <d3dcompiler.h>
@@ -9,7 +30,9 @@
 #include "../../xrEngine/XR_IOConsole.h"
 #include "../../Include/xrAPI/xrAPI.h"
 #include "../xrRender/xrRender_console.h"
+#if defined(__has_include) && __has_include("../../xrCore/xrDebugRender/xrDebugRenderProxy.h")
 #include "../../xrCore/xrDebugRender/xrDebugRenderProxy.h"
+#endif
 
 #ifndef _EDITOR
 void fill_vid_mode_list(CHW12* _hw);
@@ -80,7 +103,9 @@ void CHW12::Validate()
 void CHW12::AcquireDefaultOutput()
 {
     VERIFY(m_pAdapter);
-    R_CHK(m_pAdapter->EnumOutputs(0, &m_pOutput));
+    ComPtr<IDXGIOutput> output;
+    R_CHK(m_pAdapter->EnumOutputs(0, &output));
+    R_CHK(output.As(&m_pOutput));
 }
 
 IDXGIOutput1* CHW12::FindOutputOnCurrentAdapter(HMONITOR hMon)
@@ -89,14 +114,17 @@ IDXGIOutput1* CHW12::FindOutputOnCurrentAdapter(HMONITOR hMon)
         return nullptr;
 
     UINT oi = 0;
-    IDXGIOutput1* pOut = nullptr;
+    IDXGIOutput* pOut = nullptr;
     while (m_pAdapter->EnumOutputs(oi, &pOut) != DXGI_ERROR_NOT_FOUND)
     {
         DXGI_OUTPUT_DESC desc;
-        if (SUCCEEDED(pOut->GetDesc(&desc)) && desc.Monitor == hMon)
+        IDXGIOutput1* pOut1 = nullptr;
+        if (SUCCEEDED(pOut->QueryInterface(IID_PPV_ARGS(&pOut1))) &&
+            SUCCEEDED(pOut1->GetDesc(&desc)) && desc.Monitor == hMon)
         {
-            return pOut;
+            return pOut1;
         }
+        if (pOut1) pOut1->Release();
         pOut->Release();
         ++oi;
     }
@@ -116,15 +144,20 @@ void CHW12::SelectAdapterAndOutput(HMONITOR hTargetMonitor)
 
         for (UINT oi = 0;; ++oi)
         {
-            ComPtr<IDXGIOutput1> output;
-            if (adapter->EnumOutputs(oi, &output) == DXGI_ERROR_NOT_FOUND)
+            ComPtr<IDXGIOutput> output;
+            HRESULT hr = adapter->EnumOutputs(oi, &output);
+            if (hr == DXGI_ERROR_NOT_FOUND)
                 break;
 
+            ComPtr<IDXGIOutput1> output1;
+            hr = output.As(&output1);
+            if (FAILED(hr)) continue;
+
             DXGI_OUTPUT_DESC desc;
-            if (SUCCEEDED(output->GetDesc(&desc)) && desc.Monitor == hTargetMonitor)
+            if (SUCCEEDED(output1->GetDesc(&desc)) && desc.Monitor == hTargetMonitor)
             {
                 m_pAdapter = std::move(adapter);
-                m_pOutput = std::move(output);
+                m_pOutput = std::move(output1);
                 return;
             }
         }
@@ -303,7 +336,7 @@ void CHW12::CreateDepthStencil()
     hr = m_pDevice->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
         D3D12_HEAP_FLAG_NONE,
-        &depthDesc,
+        reinterpret_cast<const D3D12_RESOURCE_DESC*>(&depthDesc),
         D3D12_RESOURCE_STATE_DEPTH_READ,
         &optClear,
         IID_PPV_ARGS(&m_pDepthStencil));
@@ -368,7 +401,7 @@ void CHW12::CreateDevice(HWND hwnd, bool move_window)
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC& sd_fullscreen = m_ChainDescFullscreen;
     ZeroMemory(&sd_fullscreen, sizeof(sd_fullscreen));
     sd_fullscreen.Windowed = bWindowed;
-    sd_fullscreen.Scaling = DXGI_MODE_SCALING_ASPECT_RATIO_STRETCH;
+    sd_fullscreen.Scaling = (DXGI_MODE_SCALING)0;
 
     selectResolution(sd.Width, sd.Height, bWindowed);
     m_width = sd.Width;
@@ -792,7 +825,7 @@ DXGI_RATIONAL CHW12::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 
     xr_vector<DXGI_MODE_DESC1> modes;
     modes.resize(num);
-    m_pOutput->GetDisplayModeList(fmt, flags, &num, &modes.front());
+    m_pOutput->GetDisplayModeList1(fmt, flags, &num, &modes.front());
 
     for (u32 i = 0; i < num; ++i)
     {
@@ -912,9 +945,9 @@ void fill_vid_mode_list(CHW12* _hw)
     DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
     UINT flags = 0;
 
-    _hw->m_pOutput->GetDisplayModeList(format, flags, &num, nullptr);
+    _hw->m_pOutput->GetDisplayModeList1(format, flags, &num, nullptr);
     modes.resize(num);
-    _hw->m_pOutput->GetDisplayModeList(format, flags, &num, &modes.front());
+    _hw->m_pOutput->GetDisplayModeList1(format, flags, &num, &modes.front());
 
     for (u32 i = 0; i < num; ++i)
     {
